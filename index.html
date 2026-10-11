@@ -83,6 +83,24 @@ nav button.on{color:var(--gold-l)}
 #login input{max-width:260px;text-align:center;font-size:24px;letter-spacing:8px;margin:18px 0 10px}
 #login .btn{width:260px}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+/* ===== TÀI CHÍNH ===== */
+.pos{color:var(--grn)!important}.neg{color:var(--red)!important}
+.kpi div.wide{grid-column:1/-1}
+.tblw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+table.tc{border-collapse:collapse;font-size:12px;white-space:nowrap;width:100%}
+table.tc th,table.tc td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line)}
+table.tc th{font-weight:600;color:var(--muted);font-size:11px;background:#fff;position:sticky;top:0}
+table.tc th:first-child,table.tc td:first-child{text-align:left;position:sticky;left:0;background:#fff;font-weight:600;color:var(--navy)}
+table.tc tr.tap{cursor:pointer}table.tc tr.tap:active td{background:#F6F1E2}
+table.tc tr.sum td{font-weight:700;border-top:2px solid var(--navy);border-bottom:0}
+table.tc td.b{font-weight:700}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-bottom:4px}.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.chart{width:100%;height:auto;display:block}.chart text{font-size:15px;fill:#6B6B6B;font-family:inherit}
+.chart .hit{fill:transparent;cursor:pointer}.chart .hit:hover{fill:rgba(11,31,58,.05)}
+.barl{display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0}.barl span{flex:0 0 42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.barl .bt{flex:1;background:#F1ECDF;border-radius:4px;height:8px;overflow:hidden}.barl .bt b{display:block;height:100%;background:var(--gold);border-radius:4px}
+.barl em{font-style:normal;font-weight:600;min-width:84px;text-align:right;font-size:12px}
+.ht{font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--blu-l);color:var(--blu)}.ht.TM{background:var(--grn-l);color:var(--grn)}.ht.KHAC{background:#EFEBE0;color:var(--muted)}
 /* ===== PHIẾU THU 2 LIÊN (A4 = 2 × A5) ===== */
 #printArea{display:none}
 #printWrap{position:fixed;inset:0;background:#555;z-index:30;overflow:auto;padding:12px}
@@ -130,7 +148,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
 <main>
 <!-- ============ THU PHÍ ============ -->
 <section id="tab-thu">
-  <div class="seg"><button class="on" data-v="lap" onclick="segThu(this)">Lập phiếu thu</button><button data-v="ds" onclick="segThu(this)">Danh sách phiếu</button></div>
+  <div class="seg"><button class="on" data-v="lap" onclick="segThu(this)">Lập phiếu thu</button><button data-v="ds" onclick="segThu(this)">Danh sách phiếu</button><button data-v="chi" onclick="segThu(this)">Khoản chi</button></div>
   <div id="thu-lap">
     <div class="card">
       <h3>Phụ huynh / người nộp</h3>
@@ -153,6 +171,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
     <div class="seg" id="dsSeg"><button class="on" data-v="all" onclick="segDs(this)">Tất cả</button><button data-v="cho" onclick="segDs(this)">Chờ duyệt</button><button data-v="ok" onclick="segDs(this)">Đã duyệt</button><button data-v="huy" onclick="segDs(this)">Đã hủy</button></div>
     <div class="card" id="dsPhieu"><p class="muted">Đang tải…</p></div>
   </div>
+  <div id="thu-chi" class="hidden"></div>
 </section>
 
 <!-- ============ HỌC LIỆU ============ -->
@@ -185,6 +204,16 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
   <div id="l-body"><p class="muted">Đang tải…</p></div>
 </section>
 
+<!-- ============ TÀI CHÍNH (BGĐ) ============ -->
+<section id="tab-tc" class="hidden">
+  <div class="seg"><button class="on" data-v="tq" onclick="segTC(this)">Tổng quan</button><button data-v="chi" onclick="segTC(this)">Khoản chi <span id="tcCho"></span></button></div>
+  <div id="tc-tq">
+    <select id="tcNam" onchange="loadTC()" style="margin-bottom:10px"></select>
+    <div id="tcBody"><p class="muted">Đang tải…</p></div>
+  </div>
+  <div id="tc-chi" class="hidden"></div>
+</section>
+
 <!-- ============ QUẢN TRỊ ============ -->
 <section id="tab-qt" class="hidden">
   <div id="qtBody"><p class="muted">Đang tải…</p></div>
@@ -214,6 +243,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
   <button data-t="hl" onclick="tab('hl')"><b>📚</b>Học liệu</button>
   <button data-t="cc" onclick="tab('cc')"><b>🕘</b>Chấm công</button>
   <button data-t="luong" onclick="tab('luong')"><b>💼</b>Công & Lương</button>
+  <button data-t="tc" class="bgdOnly hidden" onclick="tab('tc')"><b>💰</b>Tài chính</button>
   <button data-t="qt" class="qlOnly" onclick="tab('qt')"><b>⚙️</b>Quản trị</button>
 </nav>
 
@@ -316,7 +346,8 @@ async function boot() {
 function reload() { boot(); }
 
 function tab(t) {
-  CUR = t; ['thu', 'hl', 'cc', 'luong', 'qt'].forEach(x => $('tab-' + x).classList.toggle('hidden', x !== t));
+  if (t === 'tc' && !can('BGD')) t = 'thu';
+  CUR = t; ['thu', 'hl', 'cc', 'luong', 'tc', 'qt'].forEach(x => $('tab-' + x).classList.toggle('hidden', x !== t));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
   $('totalBar').classList.toggle('hidden', !(t === 'thu' && !$('thu-lap').classList.contains('hidden')));
   if (t === 'thu' && !$('thu-ds').classList.contains('hidden')) loadDs();
@@ -324,6 +355,8 @@ function tab(t) {
   if (t === 'cc') loadCC();
   if (t === 'luong') loadLuong();
   if (t === 'qt') loadQT();
+  if (t === 'tc') { if (!$('tc-chi').classList.contains('hidden')) loadChi('tc-chi'); else loadTC(); }
+  if (t === 'thu' && !$('thu-chi').classList.contains('hidden')) loadChi('thu-chi');
   window.scrollTo(0, 0);
 }
 
@@ -339,7 +372,7 @@ function listHV() {
 }
 
 // ================= THU PHÍ: LẬP PHIẾU =================
-function segThu(b) { segBtns(b); const v = b.dataset.v; $('thu-lap').classList.toggle('hidden', v !== 'lap'); $('thu-ds').classList.toggle('hidden', v !== 'ds'); $('totalBar').classList.toggle('hidden', v !== 'lap'); if (v === 'ds') loadDs(); }
+function segThu(b) { segBtns(b); const v = b.dataset.v; $('thu-lap').classList.toggle('hidden', v !== 'lap'); $('thu-ds').classList.toggle('hidden', v !== 'ds'); $('thu-chi').classList.toggle('hidden', v !== 'chi'); $('totalBar').classList.toggle('hidden', v !== 'lap'); if (v === 'ds') loadDs(); if (v === 'chi') loadChi('thu-chi'); }
 function pickHT(el) { segChip(el); HT = el.dataset.v; renderLines(); }
 function segChip(el) { el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); }
 function addLine(k) {
@@ -719,6 +752,179 @@ async function saveDM(i) {
     if (changed) { DMD = r.data; return true; } return null;
   }, 'Đang lưu…');
   if (ok) { toast('Đã lưu'); openDM(t); boot(); }
+}
+
+// ================= TÀI CHÍNH (BGĐ) =================
+// Số liệu tính ở máy chủ khi đọc; so tháng trước tính tại đây. Tháng trước mốc tc_moc_moi = số liệu file cũ.
+let TC = null, TD = null, CHI_DS = null, CHI_EL = '', chHT = 'CK';
+const C_THU = '#2F6DB5', C_CHI = '#C9A227';
+const HT_TXT = { CK: 'Chuyển khoản', TM: 'Tiền mặt', KHAC: 'Chưa ghi' };
+const fn = n => Math.round(+n || 0).toLocaleString('vi-VN');
+const fsign = n => (n > 0 ? '+' : n < 0 ? '−' : '') + fn(Math.abs(n));
+const trieu = n => (Math.round(n / 1e5) / 10).toLocaleString('vi-VN') + ' tr';
+const thTxt = m => 'Tháng ' + m.slice(5) + '/' + m.slice(0, 4);
+const loaiChi = () => (S.cfg.tc_loai_chi || 'Lương - Thưởng, Điện - Thuê Nhà, Giáo trình - Tài liệu, Văn phòng phẩm, Cơ sở vật chất, Chi phí hàng ngày, Quà tặng, Chi phí khác').split(',').map(s => s.trim()).filter(Boolean);
+const sum3 = o => o.CK + o.TM + o.KHAC;
+function segTC(b) { segBtns(b); const v = b.dataset.v; $('tc-tq').classList.toggle('hidden', v !== 'tq'); $('tc-chi').classList.toggle('hidden', v !== 'chi'); if (v === 'chi') loadChi('tc-chi'); else loadTC(); }
+function namOpts(tu) {
+  const now = +today().slice(0, 4), cur = $('tcNam').value || String(now), o = [];
+  for (let y = now; y >= Math.min(+tu || now, now); y--) o.push(`<option value="${y}">Năm ${y}</option>`);
+  $('tcNam').innerHTML = o.join(''); $('tcNam').value = cur;
+}
+async function loadTC() {
+  if (!$('tcNam').value) namOpts();
+  $('tcBody').innerHTML = '<p class="muted">Đang tải…</p>';
+  const r = await apiGet('taichinh', { nam: $('tcNam').value }); if (!r.ok) { $('tcBody').innerHTML = ''; return toast(r.error, true); }
+  TC = r.data; namOpts(TC.nam_tu); renderTC();
+}
+function chartTC(T) {
+  const W = 660, H = 240, L = 46, B = 28, top = 10, ph = H - B - top, cw = (W - L - 6) / 12, bw = Math.min(16, cw / 2 - 4);
+  const mx = Math.max(1, ...T.map(t => Math.max(t.thu_tong, t.chi_tong)));
+  const step = [1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8, 2e8, 5e8, 1e9].find(s => mx / s <= 4) || 1e9, top_ = Math.ceil(mx / step) * step;
+  const y = v => top + ph - v / top_ * ph;
+  const bar = (x, v, c) => { if (!(v > 0)) return ''; const h = Math.max(1, ph - (y(v) - top)), r = Math.min(4, h, bw / 2), y0 = top + ph;
+    return `<path d="M${x},${y0}V${y0 - h + r}Q${x},${y0 - h} ${x + r},${y0 - h}H${x + bw - r}Q${x + bw},${y0 - h} ${x + bw},${y0 - h + r}V${y0}Z" fill="${c}"/>`; };
+  let g = '';
+  for (let v = 0; v <= top_; v += step) g += `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="${v ? '#EEE9DC' : '#B9B2A2'}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v ? trieu(v).replace(' tr', '') : '0'}</text>`;
+  T.forEach((t, i) => {
+    const x = L + i * cw + cw / 2;
+    g += bar(x - bw - 1, t.thu_tong, C_THU) + bar(x + 1, t.chi_tong, C_CHI) + `<text x="${x}" y="${H - 6}" text-anchor="middle">T${i + 1}</text>`;
+    g += `<rect class="hit" x="${L + i * cw}" y="${top}" width="${cw}" height="${ph + B}" onclick="openThang('${t.thang}')"><title>${thTxt(t.thang)}\nThu: ${fmt(t.thu_tong)}\nChi: ${fmt(t.chi_tong)}\nCòn lại: ${fmt(t.con_lai)}</title></rect>`;
+  });
+  return `<div class="lg"><span><i style="background:${C_THU}"></i>Thu</span><span><i style="background:${C_CHI}"></i>Chi</span><span style="margin-left:auto">triệu đồng · bấm cột để xem tháng</span></div>
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ thu và chi 12 tháng">${g}</svg>`;
+}
+function renderTC() {
+  const D = TC, T = D.thang, t = D.tong, co = x => x.so_thu || x.so_chi;
+  const cell = (x, v, cls) => `<td class="${cls || ''}">${co(x) ? fn(v) : '—'}</td>`;
+  const rows = T.map((x, i) => {
+    const p = T[i - 1], ss = p && co(p) && co(x) ? x.con_lai - p.con_lai : null;
+    return `<tr class="tap" onclick="openThang('${x.thang}')"><td>T${i + 1}${x.nguon === 'moi' ? ' ✱' : ''}</td>${cell(x, x.thu_tong, 'b')}${cell(x, x.chi_tong)}
+      <td class="b ${co(x) ? (x.con_lai >= 0 ? 'pos' : 'neg') : ''}">${co(x) ? fn(x.con_lai) : '—'}</td>
+      <td class="${ss === null ? '' : ss >= 0 ? 'pos' : 'neg'}">${ss === null ? '—' : (ss >= 0 ? '▲ ' : '▼ ') + fn(Math.abs(ss))}</td>
+      <td>${co(x) ? fn(x.luy_ke) : '—'}</td>${cell(x, sum3(x.thu.HP))}${cell(x, sum3(x.thu.LP))}${cell(x, sum3(x.thu.HL))}${cell(x, x.ck)}${cell(x, x.tm)}<td>${co(x) ? fn(x.moi_nguoi) : '—'}</td></tr>`;
+  }).join('');
+  const loai = Object.entries(t.loai).sort((a, b) => b[1] - a[1]), lmx = Math.max(1, ...loai.map(x => x[1]));
+  const thieu = T.reduce((a, x) => a + x.thieu_gia, 0);
+  $('tcCho').textContent = D.cho_duyet.n ? '(' + D.cho_duyet.n + ')' : '';
+  $('tcBody').innerHTML = `<div class="kpi">
+      <div><small>Tổng thu năm ${D.nam}</small><b>${fmt(t.thu)}</b></div><div><small>Tổng chi (gồm lương)</small><b>${fmt(t.chi)}</b></div>
+      <div><small>Chuyển khoản</small><b>${fmt(t.ck)}</b></div><div><small>Tiền mặt</small><b>${fmt(t.tm)}</b></div>
+      <div><small>Còn lại (thu − chi)</small><b class="${t.con_lai >= 0 ? 'pos' : 'neg'}">${fmt(t.con_lai)}</b></div><div><small>Còn lại ÷ ${D.chia} (mỗi thành viên BGĐ)</small><b class="${t.moi_nguoi >= 0 ? 'pos' : 'neg'}">${fmt(t.moi_nguoi)}</b></div></div>
+    ${D.cho_duyet.n ? `<div class="note warn" style="margin:-4px 0 12px;cursor:pointer" onclick="segTC(document.querySelector('#tab-tc .seg button[data-v=chi]'))">${D.cho_duyet.n} khoản chi chờ duyệt (${fmt(D.cho_duyet.tien)}) — chưa tính vào số liệu. Bấm để duyệt.</div>` : ''}
+    ${thieu ? `<div class="note warn" style="margin:-4px 0 12px">${thieu} lần nhập học liệu chưa có giá nhập — chi học liệu đang thiếu.</div>` : ''}
+    <div class="card"><h3>Thu và chi theo tháng</h3>${chartTC(T)}</div>
+    <div class="card"><h3>Bảng 12 tháng <span class="muted">bấm 1 tháng để xem chi tiết</span></h3><div class="tblw"><table class="tc">
+      <tr><th>Tháng</th><th>Tổng thu</th><th>Chi</th><th>Còn lại</th><th>So tháng trước</th><th>Lũy kế</th><th>Thu HP</th><th>Thu LP</th><th>Học liệu</th><th>Chuyển khoản</th><th>Tiền mặt</th><th>÷ ${D.chia}</th></tr>${rows}
+      <tr class="sum"><td>Cả năm</td><td>${fn(t.thu)}</td><td>${fn(t.chi)}</td><td class="${t.con_lai >= 0 ? 'pos' : 'neg'}">${fn(t.con_lai)}</td><td></td><td></td><td>${fn(t.thu_hp)}</td><td>${fn(t.thu_lp)}</td><td>${fn(t.thu_hl)}</td><td>${fn(t.ck)}</td><td>${fn(t.tm)}</td><td>${fn(t.moi_nguoi)}</td></tr></table></div>
+      <p class="muted" style="margin-top:8px">Tháng trước ${thTxt(D.moc).toLowerCase()}: số liệu nhập từ file "Tổng hợp tài chính" cũ. ✱ = tính từ hệ thống mới (phiếu thu đã duyệt đủ 2 cấp, khoản chi đã duyệt, lương đã xác nhận chi trả, nhập học liệu × giá nhập).</p></div>
+    <div class="card"><h3>Chi theo loại — năm ${D.nam}</h3>${loai.map(([k, v]) => `<div class="barl"><span>${esc(k)}</span><div class="bt"><b style="width:${v / lmx * 100}%"></b></div><em>${fmt(v)}</em></div>`).join('') || '<p class="muted">Chưa có khoản chi.</p>'}</div>`;
+}
+
+// chi tiết 1 tháng
+async function openThang(m) {
+  busy(true, 'Đang tải ' + thTxt(m).toLowerCase() + '…'); const r = await apiGet('taichinhThang', { thang: m }); busy(false);
+  if (!r.ok) return toast(r.error, true);
+  TD = { d: r.data, kind: 'thu', ht: 'all', loai: '', q: '' };
+  const d = r.data, st = a => a.reduce((s, x) => s + x.tien, 0), thu = st(d.thu), chi = st(d.chi);
+  const ck = st(d.thu.filter(x => x.ht === 'CK')), tm = st(d.thu.filter(x => x.ht === 'TM'));
+  M(`<h2>${thTxt(m)}</h2><p class="muted">${d.nguon === 'cu' ? 'Số liệu nhập từ file cũ' : 'Số liệu hệ thống mới'}</p>
+    <div class="kpi" style="margin-top:10px"><div><small>Thu</small><b>${fmt(thu)}</b></div><div><small>Chi</small><b>${fmt(chi)}</b></div>
+      <div><small>Chuyển khoản · Tiền mặt (thu)</small><b style="font-size:14px">${fmt(ck)} · ${fmt(tm)}</b></div><div><small>Còn lại (thu − chi)</small><b class="${thu - chi >= 0 ? 'pos' : 'neg'}">${fmt(thu - chi)}</b></div></div>
+    ${d.cho.length ? `<div class="note warn" style="margin:-4px 0 10px">${d.cho.length} khoản chi chờ duyệt trong tháng (${fmt(d.cho.reduce((s, x) => s + (+x.so_tien || 0), 0))}) — chưa tính.</div>` : ''}
+    <div class="seg" id="tdKind"><button class="on" data-v="thu" onclick="tdSet('kind',this)">Khoản thu (${d.thu.length})</button><button data-v="chi" onclick="tdSet('kind',this)">Khoản chi (${d.chi.length})</button></div>
+    <div class="seg" id="tdHT"></div>
+    <div class="row" style="margin-bottom:10px"><select id="tdLoai" onchange="TD.loai=this.value;renderTD()"></select><input id="tdQ" placeholder="🔍 Tìm…" oninput="TD.q=this.value.toLowerCase();renderTD()"></div>
+    <div class="note info" id="tdSum" style="margin:0 0 10px"></div><div class="card" id="tdList"></div>`);
+  renderTD(true);
+}
+function tdSet(f, b) { segBtns(b); TD[f] = b.dataset.v; if (f === 'kind') { TD.ht = 'all'; TD.loai = ''; renderTD(true); } else renderTD(); }
+const TL = { HP: 'Học phí', LP: 'Lệ phí', HL: 'Học liệu · đồng phục' };
+function renderTD(reset) {
+  const all = TD.d[TD.kind], isThu = TD.kind === 'thu';
+  if (reset) {
+    const hts = ['all', 'CK', 'TM'].concat(all.some(x => x.ht === 'KHAC') ? ['KHAC'] : []);
+    $('tdHT').innerHTML = hts.map(h => `<button class="${h === TD.ht ? 'on' : ''}" data-v="${h}" onclick="tdSet('ht',this)">${h === 'all' ? 'Tất cả' : HT_TXT[h]}</button>`).join('');
+    const by = {}; all.forEach(x => by[x.loai] = (by[x.loai] || 0) + x.tien);
+    $('tdLoai').innerHTML = `<option value="">${isThu ? 'Mọi khoản thu' : 'Mọi loại chi'}</option>` + Object.keys(by).sort((a, b) => by[b] - by[a]).map(k => `<option value="${esc(k)}">${esc(isThu ? TL[k] : k)} — ${trieu(by[k])}</option>`).join('');
+    $('tdQ').value = ''; TD.q = '';
+  }
+  const L = all.filter(x => (TD.ht === 'all' || x.ht === TD.ht) && (!TD.loai || x.loai === TD.loai) &&
+    (!TD.q || [x.ten, x.nd, x.lop, x.ma, x.nguoi, x.ghi_chu].join(' ').toLowerCase().includes(TD.q)));
+  const tong = L.reduce((s, x) => s + x.tien, 0);
+  $('tdSum').innerHTML = `${L.length} khoản · tổng <b>${fmt(tong)}</b>`;
+  $('tdList').innerHTML = L.slice(0, 400).map(x => isThu
+    ? `<div class="item"><div><span class="n">${esc(x.ten || x.nguoi || '—')}</span><small>${TL[x.loai]} · ${esc(x.nd || '')}${x.lop ? ' · ' + esc(x.lop) : ''}<br>${dd(x.ngay)} · ${esc(x.ma)}</small></div><div style="text-align:right"><b>${fn(x.tien)}</b><br><span class="ht ${x.ht}">${HT_TXT[x.ht]}</span></div></div>`
+    : `<div class="item"><div><span class="n">${esc(x.nd || '—')}</span><small>${esc(x.loai)}${x.nguoi ? ' · ' + esc(x.nguoi) : ''} · ${dd(x.ngay)} · ${esc(x.ma)}${x.ghi_chu ? '<br>' + esc(x.ghi_chu) : ''}${x.thieu_gia ? '<br><span class="low">chưa có giá nhập</span>' : ''}</small></div><div style="text-align:right"><b>${fn(x.tien)}</b><br><span class="ht ${x.ht}">${HT_TXT[x.ht]}</span></div></div>`
+  ).join('') + (L.length > 400 ? `<p class="muted">… còn ${L.length - 400} khoản — dùng bộ lọc / tìm kiếm.</p>` : '') || '<p class="muted">Không có khoản nào.</p>';
+}
+
+// khoản chi: giáo vụ ghi → chờ BGĐ duyệt; BGĐ ghi → có hiệu lực ngay
+async function loadChi(el) {
+  if (CHI_EL && CHI_EL !== el) $(CHI_EL).innerHTML = '';
+  CHI_EL = el; if (!$(el).innerHTML) renderChiForm();
+  const r = await apiGet('dsChi'); if (!r.ok) return toast(r.error, true);
+  CHI_DS = r.data; renderChiDs();
+}
+function renderChiForm() {
+  $(CHI_EL).innerHTML = `<div class="card"><h3>Ghi khoản chi</h3>
+    <div class="row"><div><label>Ngày chi</label><input type="date" id="chNgay" value="${today()}" onchange="chNote()"></div><div><label>Số tiền (đ)</label><input id="chTien" inputmode="numeric" placeholder="0" oninput="this.value=this.value.replace(/\\D/g,'')?(+this.value.replace(/\\D/g,'')).toLocaleString('vi-VN'):''"></div></div>
+    <label>Loại chi</label><select id="chLoai" onchange="chNote()">${loaiChi().map(l => `<option ${l === 'Chi phí hàng ngày' ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+    <label>Diễn giải</label><input id="chDg" placeholder="VD: Tiền điện tháng 10">
+    <label>Hình thức chi</label><div class="chips"><div class="chip ${chHT === 'CK' ? 'on' : ''}" data-v="CK" onclick="chHT='CK';segChip(this)">🏦 Chuyển khoản</div><div class="chip ${chHT === 'TM' ? 'on' : ''}" data-v="TM" onclick="chHT='TM';segChip(this)">💵 Tiền mặt</div></div>
+    <div class="row"><div><label>Người chi tiền</label><input id="chNguoi" value="${esc(S.user.ho_ten)}"></div><div><label>Hóa đơn / chứng từ</label><input id="chHd" placeholder="số HĐ, link ảnh"></div></div>
+    <label>Ghi chú</label><input id="chGhi" placeholder="(không bắt buộc)">
+    <div id="chNote"></div>
+    <button class="btn full" onclick="luuChi()">Lưu khoản chi</button></div>
+    <div class="card"><h3>Chờ duyệt <span class="muted" id="chChoSum"></span></h3><div id="chCho"><p class="muted">Đang tải…</p></div></div>
+    <div class="card"><h3>Đã ghi gần đây <span class="muted">60 ngày</span></h3><div id="chGan"></div></div>`;
+  chNote();
+}
+function chNote() {
+  const m = ($('chNgay').value || '').slice(0, 7), moc = S.cfg.tc_moc_moi || '2026-11', l = $('chLoai').value;
+  let h = can('BGD') ? '' : '<div class="note info">Khoản chi sẽ chờ Ban Giám đốc duyệt; chỉ tính vào số liệu sau khi duyệt.</div>';
+  if (m && m < moc) h += `<div class="note warn">Ngày trước ${thTxt(moc).toLowerCase()}: tài chính tháng này đang lấy từ file cũ — khoản này lưu lại nhưng chưa tính vào thống kê.</div>`;
+  if (/lương/i.test(l)) h += '<div class="note warn">Lương giáo viên/nhân sự: xác nhận ở Công & Lương → Bảng lương (tự tính vào chi). Chỉ ghi ở đây khoản ngoài bảng lương — tránh tính trùng.</div>';
+  if (/giáo trình|tài liệu/i.test(l)) h += '<div class="note warn">Mua học liệu/đồng phục để phát cho học viên: dùng Học liệu → Nhập (kèm giá nhập, tự tính vào chi). Không ghi lại ở đây.</div>';
+  $('chNote').innerHTML = h;
+}
+const CH_ST = { CHO_DUYET: ['c1', 'Chờ duyệt'], DA_DUYET: ['ok', 'Đã duyệt'], HUY: ['huy', 'Đã hủy'] };
+function chiItem(x, nut) {
+  const s = CH_ST[x.trang_thai] || ['c1', x.trang_thai];
+  return `<div class="item"><div><span class="n">${esc(x.dien_giai)}</span><small>${esc(x.loai)} · ${dd(x.ngay)} · ${esc(x.nguoi_chi)} · ghi bởi ${esc(x.nguoi_nhap)}<br>${esc(x.ma_chi)}${x.hoa_don ? ' · HĐ ' + esc(x.hoa_don) : ''}${x.ghi_chu ? ' · ' + esc(x.ghi_chu) : ''}${x.trang_thai === 'HUY' ? '<br><span class="low">Hủy: ' + esc(x.ly_do_huy) + ' (' + esc(x.nguoi_duyet) + ')</span>' : ''}</small></div>
+    <div style="text-align:right"><b>${fn(x.so_tien)}</b><br><span class="ht ${x.hinh_thuc || 'KHAC'}">${HT_TXT[x.hinh_thuc] || '—'}</span> <span class="st ${s[0]}">${s[1]}</span>
+    ${nut && can('BGD') ? `<br><button class="btn sm navy" style="margin-top:4px" onclick="duyetChi('${x.ma_chi}')">Duyệt</button> <button class="btn sm ghost" style="color:var(--red)" onclick="huyChi('${x.ma_chi}')">Hủy</button>` : ''}
+    ${!nut && can('BGD') && x.trang_thai === 'DA_DUYET' ? `<br><button class="btn sm ghost" style="margin-top:4px;color:var(--red)" onclick="huyChi('${x.ma_chi}')">Hủy</button>` : ''}</div></div>`;
+}
+function renderChiDs() {
+  if (!CHI_DS || !$('chCho')) return;
+  const c = CHI_DS.cho;
+  $('chChoSum').textContent = c.length ? c.length + ' khoản · ' + fmt(c.reduce((s, x) => s + (+x.so_tien || 0), 0)) : '';
+  $('chCho').innerHTML = c.map(x => chiItem(x, true)).join('') || '<p class="muted">Không có khoản chi chờ duyệt.</p>';
+  $('chGan').innerHTML = CHI_DS.gan_day.map(x => chiItem(x, false)).join('') || '<p class="muted">Chưa có.</p>';
+  if (CUR === 'tc') $('tcCho').textContent = c.length ? '(' + c.length + ')' : '';
+}
+async function luuChi() {
+  const tien = +String($('chTien').value).replace(/\D/g, ''), dg = $('chDg').value.trim(), ngay = $('chNgay').value;
+  if (!ngay) return toast('Chọn ngày chi', true);
+  if (!dg) { $('chDg').focus(); return toast('Vui lòng ghi diễn giải', true); }
+  if (!(tien > 0)) { $('chTien').focus(); return toast('Số tiền không hợp lệ', true); }
+  if (!confirm(`Lưu khoản chi ${fmt(tien)} (${HT_TXT[chHT].toLowerCase()}) — ${dg}?`)) return;
+  const req = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random());
+  const ok = await writeConfirm('saveChi', { req, ngay, loai: $('chLoai').value, dien_giai: dg, so_tien: tien, hinh_thuc: chHT, nguoi_chi: $('chNguoi').value.trim(), hoa_don: $('chHd').value.trim(), ghi_chu: $('chGhi').value.trim() },
+    async () => { const r = await apiGet('dsChi'); if (!r.ok) return null; const x = r.data.cho.concat(r.data.gan_day).find(y => y.req_id === req); if (x) { CHI_DS = r.data; return x; } return null; }, 'Đang lưu khoản chi…');
+  if (!ok) return;
+  toast('Đã lưu ' + ok.ma_chi + (ok.trang_thai === 'CHO_DUYET' ? ' — chờ duyệt' : ''));
+  ['chTien', 'chDg', 'chHd', 'chGhi'].forEach(i => $(i).value = ''); renderChiDs();
+}
+async function duyetChi(ma) {
+  const ok = await writeConfirm('duyetChi', { ma_chi: ma }, async () => { const r = await apiGet('dsChi'); if (!r.ok) return null; if (!r.data.cho.some(x => x.ma_chi === ma)) { CHI_DS = r.data; return true; } return null; }, 'Đang duyệt…');
+  if (ok) { toast('Đã duyệt ' + ma); renderChiDs(); }
+}
+async function huyChi(ma) {
+  const ly = prompt('Lý do hủy khoản chi ' + ma + ' (bắt buộc):'); if (!ly || !ly.trim()) return;
+  const ok = await writeConfirm('huyChi', { ma_chi: ma, ly_do: ly.trim() }, async () => { const r = await apiGet('dsChi'); if (!r.ok) return null; const x = r.data.gan_day.find(y => y.ma_chi === ma); if (x ? x.trang_thai === 'HUY' : !r.data.cho.some(y => y.ma_chi === ma)) { CHI_DS = r.data; return true; } return null; }, 'Đang hủy…');
+  if (ok) { toast('Đã hủy ' + ma); renderChiDs(); }
 }
 
 // ================= KHỞI ĐỘNG =================
