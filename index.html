@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#0B1F3A">
+<title>Anh ngữ Tân Minh — Quản lý</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B1F3A;--gold:#C9A227;--gold-l:#E4C75A;--bg:#FAF8F3;--card:#fff;--text:#1A1A1A;--muted:#6B6B6B;
+  --red:#C0392B;--red-l:#FDECEA;--yel:#B7791F;--yel-l:#FFF6DB;--grn:#2E7D32;--grn-l:#E8F5E9;--blu:#1F6FB2;--blu-l:#E3F0FB;--line:#E7E2D6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;padding-bottom:140px}
+header{background:var(--navy);color:#fff;padding:10px 16px;position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px}
+header h1{font-family:'Fraunces',Georgia,serif;font-size:18px;color:var(--gold-l);flex:1}
+header .u{font-size:12px;opacity:.85;text-align:right;line-height:1.3}
+header button{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:10px;width:38px;height:38px;font-size:17px}
+#net{display:none;background:var(--red);color:#fff;text-align:center;font-size:12px;padding:4px}
+main{padding:12px;max-width:720px;margin:0 auto}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(11,31,58,.08)}
+.card h3{font-size:14px;color:var(--navy);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+input:disabled{background:#F6F4EE;color:#444}
+.pick{width:100%;text-align:left;font:inherit;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}
+.pick.empty{color:var(--muted)}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{flex:1;padding:11px 8px;border:1.5px solid var(--line);border-radius:10px;text-align:center;font-weight:600;background:#fff;font-size:14px;white-space:nowrap;cursor:pointer}
+.chip.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.add{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.add button{padding:12px 4px;border-radius:12px;border:1.5px dashed var(--gold);background:#fff;font:inherit;font-weight:600;font-size:13px;color:var(--navy)}
+.add button span{display:block;font-size:20px}
+.line{border-left:4px solid var(--gold)}.line.HP{border-color:var(--blu)}.line.LP{border-color:#7B4FA0}
+.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;color:#fff;background:var(--gold)}
+.tag.HP{background:var(--blu)}.tag.LP{background:#7B4FA0}.tag.HL{color:var(--navy)}
+.x{border:0;background:none;font-size:20px;color:var(--muted);width:36px;height:36px}
+.note{font-size:12px;margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--grn-l);color:var(--grn)}
+.note.warn{background:var(--yel-l);color:var(--yel)}.note.err{background:var(--red-l);color:var(--red)}.note.info{background:var(--blu-l);color:var(--blu)}
+.money{text-align:right;font-weight:700;font-size:17px;color:var(--navy);margin-top:10px}
+.total{position:fixed;left:0;right:0;bottom:62px;background:#fff;border-top:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:9}
+.total .t{flex:1}.total .t small{color:var(--muted);font-size:12px}.total .t b{display:block;font-size:20px;color:var(--navy)}
+.btn{background:var(--gold);color:var(--navy);border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.btn:disabled{opacity:.4}.btn.sm{padding:7px 12px;font-size:12px;border-radius:8px}
+.btn.navy{background:var(--navy);color:#fff}.btn.ghost{background:#fff;border:1.5px solid var(--line)}.btn.red{background:var(--red);color:#fff}
+.btn.full{width:100%;margin-top:14px}
+nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:var(--navy);display:flex;z-index:10}
+nav button{flex:1;background:none;border:0;color:rgba(255,255,255,.6);font:inherit;font-size:10.5px}
+nav button b{display:block;font-size:19px;margin-bottom:2px}
+nav button.on{color:var(--gold-l)}
+.hidden{display:none!important}
+.item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);gap:10px}
+.item:last-child{border:0}.item .n{font-weight:600}.item small{color:var(--muted);font-size:12px;display:block}
+.item.tap{cursor:pointer}
+.qty{font-weight:700;font-size:17px;min-width:44px;text-align:right}
+.low{color:var(--red)}
+.st{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap;display:inline-block}
+.st.c1{background:var(--yel-l);color:var(--yel)}.st.c2{background:var(--blu-l);color:var(--blu)}.st.ok{background:var(--grn-l);color:var(--grn)}.st.huy,.st.no{background:var(--red-l);color:var(--red)}
+.seg{display:flex;background:#EFEBE0;border-radius:10px;padding:3px;margin-bottom:12px;overflow-x:auto}
+.seg button{flex:1;border:0;background:none;padding:9px 6px;border-radius:8px;font:inherit;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.modal{position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px 24px;max-height:92vh;overflow:auto}
+.sheet h2{font-family:'Fraunces',serif;color:var(--navy);font-size:20px;margin-bottom:4px}
+.qr{display:block;margin:12px auto;width:230px;border-radius:12px;background:#fff;padding:8px}
+.muted{color:var(--muted);font-size:12px}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.kpi div{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(11,31,58,.08)}
+.kpi small{color:var(--muted);font-size:11px;display:block}.kpi b{font-size:18px;color:var(--navy)}
+.step{display:flex;align-items:center;gap:6px}.step button{width:48px;height:46px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:20px;font-weight:700;color:var(--navy)}
+.step input{text-align:center;font-weight:700;font-size:17px}
+.brk{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu button{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 8px;font:inherit;font-weight:600;font-size:13px;color:var(--navy);text-align:left}
+.menu button span{display:block;font-size:20px;margin-bottom:4px}.menu button small{display:block;color:var(--muted);font-weight:400;font-size:11px}
+#toast{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;display:none;max-width:90vw;text-align:center}
+#toast.err{background:var(--red)}
+#busy{position:fixed;inset:0;background:rgba(250,248,243,.6);z-index:35;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;font-weight:600;color:var(--navy)}
+.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+#login{position:fixed;inset:0;background:var(--navy);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;color:#fff}
+#login h1{font-family:'Fraunces',serif;color:var(--gold-l);font-size:26px;text-align:center}
+#login input{max-width:260px;text-align:center;font-size:24px;letter-spacing:8px;margin:18px 0 10px}
+#login .btn{width:260px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+/* ===== PHIẾU THU 2 LIÊN (A4 = 2 × A5) ===== */
+#printArea{display:none}
+#printWrap{position:fixed;inset:0;background:#555;z-index:30;overflow:auto;padding:12px}
+#printWrap .bar{display:flex;gap:8px;margin-bottom:10px;position:sticky;top:0;z-index:2}
+.a4{background:#fff;width:210mm;margin:0 auto;transform-origin:top left}
+.lien{height:148.5mm;padding:7mm 10mm;position:relative;font-family:'Be Vietnam Pro',Arial,sans-serif;font-size:10.5pt;color:#000;overflow:hidden}
+.lien+.lien{border-top:1px dashed #888}
+.lien .hd{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--navy);padding-bottom:2mm}
+.lien .tt{font-family:'Fraunces',Georgia,serif;font-size:14pt;color:var(--navy);font-weight:700}
+.lien .dc{font-size:8.5pt;color:#333}
+.lien .lb{font-size:8.5pt;font-weight:700;border:1px solid #000;padding:1mm 2mm;border-radius:2mm;white-space:nowrap}
+.lien h2{text-align:center;font-size:14pt;margin:2.5mm 0 0}
+.lien .so{text-align:center;font-size:9pt;margin-bottom:2mm}
+.lien .info{display:grid;grid-template-columns:1fr 1fr;gap:.6mm 6mm;font-size:9.5pt;margin-bottom:2mm}
+.lien table{width:100%;border-collapse:collapse;font-size:9pt}
+.lien th,.lien td{border:1px solid #444;padding:1mm 1.5mm;vertical-align:top}
+.lien th{background:#EEE9DA;font-weight:600}
+.lien td.r,.lien th.r{text-align:right;white-space:nowrap}
+.lien .sum{display:flex;justify-content:space-between;gap:4mm;margin-top:2mm}
+.lien .chu{font-size:9pt;font-style:italic;flex:1}
+.lien .qrb{text-align:center;font-size:7.5pt;width:30mm}
+.lien .qrb img{width:28mm;height:28mm;display:block;margin:0 auto}
+.lien .ky{display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;font-size:9pt;font-weight:600;margin-top:1mm}
+.lien .ky small{display:block;font-weight:400;font-style:italic;font-size:7.5pt}
+.lien .ft{position:absolute;bottom:4mm;left:10mm;right:10mm;font-size:7.5pt;color:#555;text-align:center}
+.lien .huy{position:absolute;top:45mm;left:0;right:0;text-align:center;font-size:40pt;color:rgba(192,57,43,.35);font-weight:700;transform:rotate(-12deg)}
+@media print{
+  @page{size:A4;margin:0}
+  body{padding:0;background:#fff}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+  #printArea .a4{width:210mm;transform:none!important}
+}
+</style>
+</head>
+<body>
+<div id="net">⚠️ Mất kết nối mạng — dữ liệu chưa gửi được</div>
+<header>
+  <h1>Anh ngữ Tân Minh</h1>
+  <div class="u" id="who"></div>
+  <button onclick="reload()" title="Tải lại">⟳</button>
+  <button onclick="logout()" title="Đăng xuất">⏻</button>
+</header>
+
+<main>
+<!-- ============ THU PHÍ ============ -->
+<section id="tab-thu">
+  <div class="seg"><button class="on" data-v="lap" onclick="segThu(this)">Lập phiếu thu</button><button data-v="ds" onclick="segThu(this)">Danh sách phiếu</button></div>
+  <div id="thu-lap">
+    <div class="card">
+      <h3>Phụ huynh / người nộp</h3>
+      <label>Họ tên</label><input id="nguoiNop" placeholder="VD: Chị Hằng (mẹ học viên An Na)">
+      <label>Số điện thoại</label><input id="sdt" inputmode="tel" placeholder="09xx xxx xxx">
+      <label>Hình thức nộp</label>
+      <div class="chips" id="htChips"><div class="chip on" data-v="CK" onclick="pickHT(this)">🏦 Chuyển khoản</div><div class="chip" data-v="TM" onclick="pickHT(this)">💵 Tiền mặt</div></div>
+      <label>Ghi chú phiếu</label><input id="ghiChuPhieu" placeholder="(không bắt buộc)">
+    </div>
+    <div class="add">
+      <button onclick="addLine('HP')"><span>📘</span>Học phí</button>
+      <button onclick="addLine('LP')"><span>🧾</span>Lệ phí</button>
+      <button onclick="addLine('HL')"><span>📚</span>Học liệu · Đồng phục</button>
+    </div>
+    <div id="lines"></div>
+    <p id="empty" class="muted" style="text-align:center;padding:20px 0">Chọn 1 trong 3 mục trên để thêm khoản thu.<br>Một phiếu có thể thu cho nhiều học viên (anh chị em).</p>
+  </div>
+  <div id="thu-ds" class="hidden">
+    <input id="dsTim" placeholder="🔍 Tìm số phiếu, người nộp, học viên…" oninput="renderDs()" style="margin-bottom:10px">
+    <div class="seg" id="dsSeg"><button class="on" data-v="all" onclick="segDs(this)">Tất cả</button><button data-v="cho" onclick="segDs(this)">Chờ duyệt</button><button data-v="ok" onclick="segDs(this)">Đã duyệt</button><button data-v="huy" onclick="segDs(this)">Đã hủy</button></div>
+    <div class="card" id="dsPhieu"><p class="muted">Đang tải…</p></div>
+  </div>
+</section>
+
+<!-- ============ HỌC LIỆU ============ -->
+<section id="tab-hl" class="hidden">
+  <div class="row" style="margin-bottom:12px"><button class="btn navy" onclick="openNhap()">＋ Nhập</button><button class="btn ghost" onclick="openXuat()">Cấp phát / Xuất</button><button class="btn ghost qlOnly" onclick="openKiemKe()">Kiểm kê</button></div>
+  <div class="seg" id="hlSeg"></div>
+  <div class="card" id="hlList"></div>
+  <div class="card"><h3>Nhật ký gần đây</h3><div id="hlLog"><p class="muted">Đang tải…</p></div></div>
+</section>
+
+<!-- ============ CHẤM CÔNG ============ -->
+<section id="tab-cc" class="hidden">
+  <div class="card">
+    <h3>Ghi giờ làm việc</h3>
+    <div class="row"><div><label>Ngày</label><input type="date" id="ccNgay" onchange="loadCC()"></div>
+      <div><label>Giáo viên / nhân sự</label><select id="ccNguoi"></select></div></div>
+    <label>Loại công việc</label><div class="chips" id="ccLoai"></div>
+    <label>Số giờ</label>
+    <div class="step"><button onclick="stepGio(-.25)">−</button><input id="ccGio" value="1,5" inputmode="decimal"><button onclick="stepGio(.25)">+</button></div>
+    <label>Ghi chú</label><input id="ccGhi" placeholder="VD: dạy thay Ms Linh, lớp Movers 5.1">
+    <button class="btn full" onclick="luuCC()">Lưu chấm công</button>
+  </div>
+  <div class="card"><h3>Đã ghi trong ngày <span class="muted" id="ccSum"></span></h3><div id="ccList"></div></div>
+</section>
+
+<!-- ============ CÔNG & LƯƠNG ============ -->
+<section id="tab-luong" class="hidden">
+  <select id="thang" onchange="loadLuong()" style="margin-bottom:10px"></select>
+  <div class="seg"><button class="on" data-v="cong" onclick="segL(this)">Bảng công</button><button data-v="luong" onclick="segL(this)">Bảng lương</button></div>
+  <div id="l-body"><p class="muted">Đang tải…</p></div>
+</section>
+
+<!-- ============ QUẢN TRỊ ============ -->
+<section id="tab-qt" class="hidden">
+  <div id="qtBody"><p class="muted">Đang tải…</p></div>
+  <div class="card bgdOnly"><h3>Danh mục & thiết lập</h3>
+    <div class="menu">
+      <button onclick="openDM('HOC_VIEN')"><span>🧒</span>Học viên<small>hồ sơ, lớp đang học</small></button>
+      <button onclick="openDM('LOP')"><span>🏫</span>Lớp học<small>cấp độ, học phí/tuần</small></button>
+      <button onclick="openDM('NHAN_SU')"><span>👩‍🏫</span>Giáo viên & nhân sự<small>kiểu lương, lương khoán</small></button>
+      <button onclick="openDM('DON_GIA')"><span>💲</span>Đơn giá công việc<small>theo người, từ tháng</small></button>
+      <button onclick="openDM('LE_PHI')"><span>🧾</span>Lệ phí<small>phí thi, tài liệu…</small></button>
+      <button onclick="openDM('HOC_LIEU')"><span>📚</span>Học liệu<small>đơn giá, mức tối thiểu</small></button>
+      <button onclick="openDM('NGUOI_DUNG')"><span>🔐</span>Người dùng<small>PIN & vai trò</small></button>
+      <button onclick="openDM('CAU_HINH')"><span>⚙️</span>Cấu hình<small>tài khoản, thông tin in phiếu</small></button>
+    </div>
+  </div>
+</section>
+<footer>© Trung tâm Anh ngữ Tân Minh</footer>
+</main>
+
+<div class="total" id="totalBar">
+  <div class="t"><small id="tCount">0 khoản</small><b id="tSum">0 đ</b></div>
+  <button class="btn" id="btnLuu" disabled onclick="luuPhieu()">Lưu phiếu thu</button>
+</div>
+
+<nav>
+  <button class="on" data-t="thu" onclick="tab('thu')"><b>🧾</b>Thu phí</button>
+  <button data-t="hl" onclick="tab('hl')"><b>📚</b>Học liệu</button>
+  <button data-t="cc" onclick="tab('cc')"><b>🕘</b>Chấm công</button>
+  <button data-t="luong" onclick="tab('luong')"><b>💼</b>Công & Lương</button>
+  <button data-t="qt" class="qlOnly" onclick="tab('qt')"><b>⚙️</b>Quản trị</button>
+</nav>
+
+<div id="login" class="hidden">
+  <h1>Trung tâm Anh ngữ<br>Tân Minh</h1>
+  <p style="opacity:.8;margin-top:8px">Nhập mã PIN của bạn</p>
+  <input id="pinIn" type="password" inputmode="numeric" maxlength="8" onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="btn" onclick="doLogin()">Đăng nhập</button>
+  <p id="loginErr" style="color:#ffb4a9;margin-top:10px;font-size:13px"></p>
+</div>
+<div id="modal" class="modal hidden" onclick="if(event.target===this)closeM()"><div class="sheet" id="sheet"></div></div>
+<div id="printWrap" class="hidden"><div class="bar"><button class="btn ghost" onclick="$('printWrap').classList.add('hidden')">✕ Đóng</button><button class="btn" style="flex:1" onclick="window.print()">🖨️ In (A4 — 2 liên)</button></div><div id="printPrev"></div></div>
+<div id="printArea"></div>
+<div id="busy"><div class="spin"></div><div id="busyTxt">Đang xử lý…</div></div>
+<div id="toast"></div>
+
+<script>
+// ================= 1. CẤU HÌNH =================
+const API_URL = 'https://script.google.com/macros/s/AKfycbwtjciqD9ujUN8zRp9eFRwx6c0InEOrHS1Y8wGm_XgPIEy4V2IRklYkNZDFrMg7i5YR/exec';
+
+// ================= 2. TẦNG API =================
+let PIN = '';
+try { PIN = localStorage.getItem('tme_pin') || ''; } catch (e) {}
+function apiGet(action, params = {}) {
+  return new Promise(res => {
+    const cb = 'cb' + Date.now() + Math.floor(Math.random() * 1e4);
+    const s = document.createElement('script');
+    const t = setTimeout(() => { done({ ok: false, error: 'Máy chủ không phản hồi, thử lại sau' }); }, 30000);
+    function done(d) { clearTimeout(t); delete window[cb]; s.remove(); res(d); }
+    window[cb] = done;
+    s.onerror = () => done({ ok: false, error: 'Không kết nối được máy chủ — kiểm tra mạng' });
+    s.src = API_URL + '?' + new URLSearchParams(Object.assign({ action, pin: PIN, callback: cb }, params));
+    document.body.appendChild(s);
+  });
+}
+async function apiPost(action, payload) {
+  if (!navigator.onLine) throw new Error('Đang mất mạng — chưa gửi được, thử lại khi có mạng');
+  await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, pin: PIN, payload }) });
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+// ================= 3. TRẠNG THÁI =================
+let S = { user: null, cfg: {}, lop: [], hv: [], lephi: [], hl: [], ns: [], cv: [] };
+let PHIEU = [], lines = [], seq = 0, HT = 'CK', CUR = 'thu', dsF = 'all', hlF = 'Tất cả', lV = 'cong', ccCV = '', LUONG = null, LAST = null;
+const $ = id => document.getElementById(id);
+const RANK = { GV: 1, QL: 2, BGD: 3 };
+const can = r => S.user && RANK[S.user.vai_tro] >= RANK[r];
+const ROLE_TXT = { GV: 'Giáo vụ', QL: 'Quản lý', BGD: 'Ban Giám đốc' };
+
+// ================= tiện ích =================
+const fmt = n => (Math.round(+n) || 0).toLocaleString('vi-VN') + ' đ';
+const fh = n => (+n || 0).toLocaleString('vi-VN', { maximumFractionDigits: 2 });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const addDays = (iso, n) => { const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const dd = iso => iso ? String(iso).slice(0, 10).split('-').reverse().join('/') : '';
+const diff = (a, b) => Math.round((new Date(a + 'T00:00:00') - new Date(b + 'T00:00:00')) / 864e5);
+const ktHP = (bd, tuan) => addDays(bd, Math.round(tuan * 7) - 1);
+const lopOf = ma => S.lop.find(l => l.ma_lop === ma) || {};
+const hvOf = ma => S.hv.find(h => h.ma === ma) || {};
+const hlName = h => h ? h.ten + (h.size ? ' size ' + h.size : '') : '';
+function toast(m, err) { const t = $('toast'); t.textContent = m; t.className = err ? 'err' : ''; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', err ? 5000 : 2500); }
+function busy(on, txt) { $('busy').style.display = on ? 'flex' : 'none'; $('busyTxt').textContent = txt || 'Đang xử lý…'; }
+function M(h) { $('sheet').innerHTML = h; $('modal').classList.remove('hidden'); }
+function closeM() { $('modal').classList.add('hidden'); }
+function segBtns(b) { b.parentNode.querySelectorAll('button').forEach(x => x.classList.remove('on')); b.classList.add('on'); }
+window.addEventListener('online', () => $('net').style.display = 'none');
+window.addEventListener('offline', () => $('net').style.display = 'block');
+
+// ghi rồi đọc lại để xác nhận (no-cors không đọc được phản hồi)
+async function writeConfirm(action, payload, check, txt) {
+  busy(true, txt || 'Đang gửi…');
+  try {
+    await apiPost(action, payload);
+    for (let i = 0; i < 10; i++) { await wait(i ? 2000 : 1500); const r = await check(); if (r) { busy(false); return r; } }
+    throw new Error('Chưa xác nhận được việc lưu — kiểm tra lại danh sách trước khi gửi lại');
+  } catch (e) { busy(false); toast(e.message, true); return null; }
+}
+
+// ================= ĐĂNG NHẬP =================
+async function doLogin() {
+  PIN = $('pinIn').value.trim(); if (!PIN) return;
+  busy(true, 'Đang đăng nhập…'); const r = await apiGet('login'); busy(false);
+  if (!r.ok) { $('loginErr').textContent = r.error; return; }
+  try { localStorage.setItem('tme_pin', PIN); } catch (e) {}
+  $('login').classList.add('hidden'); boot();
+}
+function logout() { if (!confirm('Đăng xuất khỏi thiết bị này?')) return; try { localStorage.removeItem('tme_pin'); } catch (e) {} PIN = ''; location.reload(); }
+async function boot() {
+  busy(true, 'Đang tải dữ liệu…'); const r = await apiGet('boot'); busy(false);
+  if (!r.ok) { if (/PIN/.test(r.error)) { $('login').classList.remove('hidden'); $('loginErr').textContent = r.error; } else toast(r.error, true); return; }
+  S = r.data;
+  $('who').innerHTML = esc(S.user.ho_ten) + '<br>' + ROLE_TXT[S.user.vai_tro];
+  document.querySelectorAll('.qlOnly').forEach(e => e.classList.toggle('hidden', !can('QL')));
+  document.querySelectorAll('.bgdOnly').forEach(e => e.classList.toggle('hidden', !can('BGD')));
+  ccCV = ccCV || S.cv[0];
+  renderLines(); renderHL(); initCC(); initThang();
+  tab(CUR);
+}
+function reload() { boot(); }
+
+function tab(t) {
+  CUR = t; ['thu', 'hl', 'cc', 'luong', 'qt'].forEach(x => $('tab-' + x).classList.toggle('hidden', x !== t));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  $('totalBar').classList.toggle('hidden', !(t === 'thu' && !$('thu-lap').classList.contains('hidden')));
+  if (t === 'thu' && !$('thu-ds').classList.contains('hidden')) loadDs();
+  if (t === 'hl') loadHlLog();
+  if (t === 'cc') loadCC();
+  if (t === 'luong') loadLuong();
+  if (t === 'qt') loadQT();
+  window.scrollTo(0, 0);
+}
+
+// ================= CHỌN HỌC VIÊN (tìm kiếm) =================
+function pickHV(cb) {
+  M(`<h2>Chọn học viên</h2><input id="hvTim" placeholder="🔍 Gõ tên học viên…" oninput="listHV()" autocomplete="off" style="margin:8px 0"><div id="hvKq" class="card" style="max-height:55vh;overflow:auto"></div>`);
+  window._pickCb = cb; listHV(); setTimeout(() => $('hvTim').focus(), 100);
+}
+function listHV() {
+  const q = $('hvTim').value.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  const L = S.hv.filter(h => !q || h.ten.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').includes(q)).slice(0, 60);
+  $('hvKq').innerHTML = L.map(h => `<div class="item tap" onclick="window._pickCb('${h.ma}');closeM()"><div><span class="n">${esc(h.ten)}</span><small>${esc(lopOf(h.lop).ten_lop || 'chưa có lớp')}${h.han ? ' · học phí đến ' + dd(h.han) : ''}</small></div></div>`).join('') || '<p class="muted">Không tìm thấy.</p>';
+}
+
+// ================= THU PHÍ: LẬP PHIẾU =================
+function segThu(b) { segBtns(b); const v = b.dataset.v; $('thu-lap').classList.toggle('hidden', v !== 'lap'); $('thu-ds').classList.toggle('hidden', v !== 'ds'); $('totalBar').classList.toggle('hidden', v !== 'lap'); if (v === 'ds') loadDs(); }
+function pickHT(el) { segChip(el); HT = el.dataset.v; renderLines(); }
+function segChip(el) { el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); }
+function addLine(k) {
+  const id = ++seq;
+  const prev = lines.length ? lines[lines.length - 1].hv : '';
+  if (k === 'HP') lines.push({ id, k, hv: '', tuan: 12, bd: '', giam: 0, dg: 0 });
+  if (k === 'LP') lines.push({ id, k, hv: prev, lp: (S.lephi[0] || {}).ma_lp, dg: (S.lephi[0] || {}).don_gia || 0, giam: 0 });
+  if (k === 'HL') lines.push({ id, k, hv: prev, hl: '', sl: 1, giam: 0 });
+  renderLines();
+  if (k === 'HP') pickHV(ma => setHV(id, ma));
+  setTimeout(() => $('L' + id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+}
+function setHV(id, ma) {
+  const l = lines.find(x => x.id === id); l.hv = ma;
+  if (l.k === 'HP') {
+    const h = hvOf(ma); l.dg = +lopOf(h.lop).hoc_phi_tuan || 0;
+    l.bd = h.han && diff(today(), h.han) <= 30 ? addDays(h.han, 1) : today();
+  }
+  renderLines();
+}
+function del(id) { lines = lines.filter(l => l.id !== id); renderLines(); }
+function upd(id, f, v) {
+  const l = lines.find(x => x.id === id); l[f] = v;
+  if (l.k === 'LP' && f === 'lp') l.dg = +(S.lephi.find(x => x.ma_lp === v) || {}).don_gia || 0;
+  renderLines();
+}
+function lineMoney(l) {
+  if (l.k === 'HP') return l.hv ? l.tuan * l.dg - l.giam : 0;
+  if (l.k === 'LP') return l.dg - l.giam;
+  const g = S.hl.find(x => x.ma_hl === l.hl); return g ? g.don_gia * l.sl - l.giam : 0;
+}
+const hvBtn = l => `<label>Học viên</label><button class="pick ${l.hv ? '' : 'empty'}" onclick="pickHV(ma=>setHV(${l.id},ma))">${l.hv ? esc(hvOf(l.hv).ten) : '— bấm để chọn học viên —'}</button>`;
+function lineHTML(l) {
+  let b = hvBtn(l), note = '';
+  if (l.k === 'HP' && l.hv) {
+    const h = hvOf(l.hv), lop = lopOf(h.lop), kt = l.bd ? ktHP(l.bd, l.tuan) : '';
+    b += `<div class="row"><div><label>Lớp</label><input value="${esc(lop.ten_lop || 'chưa có lớp')}" disabled></div><div><label>Học phí/tuần</label><input type="number" inputmode="numeric" value="${l.dg || ''}" ${lop.hoc_phi_tuan && !can('BGD') ? 'disabled' : ''} onchange="upd(${l.id},'dg',+this.value||0)"></div></div>
+      <div class="row"><div><label>Số tuần</label><input type="number" inputmode="decimal" step="0.1" value="${l.tuan}" onchange="upd(${l.id},'tuan',+String(this.value).replace(',','.')||0)"></div>
+      <div><label>Học từ ngày</label><input type="date" value="${l.bd}" onchange="upd(${l.id},'bd',this.value)"></div></div>
+      <label>Giảm học phí (đ)</label><input type="number" inputmode="numeric" value="${l.giam || ''}" placeholder="0" onchange="upd(${l.id},'giam',+this.value||0)">`;
+    if (!l.dg) note += `<div class="note err">Lớp chưa có học phí/tuần — nhập đơn giá hoặc nhờ Ban Giám đốc cập nhật danh mục Lớp.</div>`;
+    if (h.han && l.bd) {
+      const g = diff(l.bd, h.han);
+      if (g <= 0) note += `<div class="note err">⚠️ Trùng thời gian: học phí trước còn hiệu lực đến ${dd(h.han)}.</div>`;
+      else if (g > 8) note += `<div class="note warn">Khoảng nghỉ ${g - 1} ngày so với học phí trước (hết ${dd(h.han)}).</div>`;
+      else note += `<div class="note">✓ Nối tiếp học phí trước (hết ${dd(h.han)}).</div>`;
+      if (h.han < today()) note += `<div class="note warn">Học viên đã hết hạn học phí ${diff(today(), h.han)} ngày — đối chiếu điểm danh các buổi này.</div>`;
+    }
+    if (kt) note += `<div class="note info">Học đến <b>${dd(kt)}</b>.</div>`;
+  }
+  if (l.k === 'LP') b += `<label>Loại lệ phí</label><select onchange="upd(${l.id},'lp',this.value)">${S.lephi.map(x => `<option value="${x.ma_lp}" ${x.ma_lp === l.lp ? 'selected' : ''}>${esc(x.ten)} — ${fmt(x.don_gia)}</option>`).join('')}</select>
+    <div class="row"><div><label>Số tiền</label><input type="number" inputmode="numeric" value="${l.dg}" onchange="upd(${l.id},'dg',+this.value||0)"></div><div><label>Giảm (đ)</label><input type="number" inputmode="numeric" value="${l.giam || ''}" placeholder="0" onchange="upd(${l.id},'giam',+this.value||0)"></div></div>`;
+  if (l.k === 'HL') {
+    const g = S.hl.find(x => x.ma_hl === l.hl);
+    b += `<label>Học liệu / đồng phục</label><select onchange="upd(${l.id},'hl',this.value)"><option value="">— chọn —</option>${S.hl.map(x => `<option value="${x.ma_hl}" ${x.ma_hl === l.hl ? 'selected' : ''} ${x.sl <= 0 || !x.don_gia ? 'disabled' : ''}>${esc(hlName(x))} — ${x.don_gia ? fmt(x.don_gia) : 'chưa có giá'} (còn ${x.sl})</option>`).join('')}</select>
+    <div class="row"><div><label>Số lượng</label><input type="number" inputmode="numeric" value="${l.sl}" min="1" onchange="upd(${l.id},'sl',+this.value||1)"></div><div><label>Giảm (đ)</label><input type="number" inputmode="numeric" value="${l.giam || ''}" placeholder="0" onchange="upd(${l.id},'giam',+this.value||0)"></div></div>`;
+    if (g) note = l.sl > g.sl ? `<div class="note err">⛔ Chỉ còn ${g.sl} — không đủ để phát ${l.sl}.</div>` : `<div class="note">Phát ngay cho học viên · còn lại ${g.sl - l.sl}.</div>`;
+  }
+  const name = { HP: 'HỌC PHÍ', LP: 'LỆ PHÍ', HL: 'HỌC LIỆU · ĐỒNG PHỤC' }[l.k];
+  return `<div class="card line ${l.k}" id="L${l.id}"><h3><span class="tag ${l.k}">${name}</span><button class="x" onclick="del(${l.id})">✕</button></h3>${b}${note}<div class="money">${fmt(lineMoney(l))}</div></div>`;
+}
+function lineOK(l) {
+  if (!l.hv || lineMoney(l) < 0) return false;
+  if (l.k === 'HP') { const h = hvOf(l.hv); return l.tuan > 0 && l.dg > 0 && l.bd && (!h.han || l.bd > h.han); }
+  if (l.k === 'HL') { const g = S.hl.find(x => x.ma_hl === l.hl); return g && l.sl > 0 && l.sl <= g.sl; }
+  return l.dg > 0;
+}
+function renderLines() {
+  $('lines').innerHTML = lines.map(lineHTML).join('');
+  $('empty').classList.toggle('hidden', lines.length > 0);
+  $('tSum').textContent = fmt(lines.reduce((a, l) => a + lineMoney(l), 0));
+  $('tCount').textContent = lines.length + ' khoản · ' + (HT === 'CK' ? 'Chuyển khoản' : 'Tiền mặt');
+  $('btnLuu').disabled = !lines.length || !lines.every(lineOK);
+}
+async function luuPhieu() {
+  const nop = $('nguoiNop').value.trim();
+  if (!nop) { toast('Vui lòng ghi họ tên người nộp', true); $('nguoiNop').focus(); return; }
+  const tong = lines.reduce((a, l) => a + lineMoney(l), 0);
+  if (!confirm(`Lưu phiếu thu ${fmt(tong)} (${HT === 'CK' ? 'chuyển khoản' : 'tiền mặt'})?`)) return;
+  const req = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random());
+  const payload = {
+    req, nguoi_nop: nop, sdt: $('sdt').value.trim(), hinh_thuc: HT, ghi_chu: $('ghiChuPhieu').value.trim(),
+    lines: lines.map(l => {
+      const h = hvOf(l.hv);
+      if (l.k === 'HP') return { loai: 'HP', ma_hv: l.hv, ma_lop: h.lop, so_tuan: l.tuan, ngay_bd: l.bd, don_gia: l.dg, giam: l.giam };
+      if (l.k === 'LP') return { loai: 'LP', ma_hv: l.hv, ma_lop: h.lop, ma_lp: l.lp, so_luong: 1, don_gia: l.dg, giam: l.giam };
+      const g = S.hl.find(x => x.ma_hl === l.hl); return { loai: 'HL', ma_hv: l.hv, ma_lop: h.lop, ma_hl: l.hl, so_luong: l.sl, don_gia: g.don_gia, giam: l.giam };
+    })
+  };
+  const p = await writeConfirm('savePhieu', payload, async () => { const r = await apiGet('phieuByReq', { req }); return r.ok && r.data; }, 'Đang lưu phiếu thu…');
+  if (!p) return;
+  lines = []; ['nguoiNop', 'sdt', 'ghiChuPhieu'].forEach(i => $(i).value = '');
+  boot();   // cập nhật hạn học phí & số lượng học liệu
+  showPhieu(p, true);
+}
+function qrUrl(p, size) { const c = S.cfg; return `https://img.vietqr.io/image/${c.bank_bin}-${c.so_tk}-${size}.png?amount=${p.tong}&addInfo=${encodeURIComponent(p.so_phieu)}&accountName=${encodeURIComponent(c.ten_tk || '')}`; }
+const ST_TXT = { c1: 'Chờ duyệt cấp 1', c2: 'Chờ BGĐ duyệt', ok: 'Đã duyệt', huy: 'Đã hủy' };
+function showPhieu(p, moi) {
+  window._P = p;
+  const L = p.lines.map(l => `<div class="item"><div><span class="n">${esc(l.ten_hv)}</span><small>${noiDung(l, true)}</small></div><b>${fmt(tienDong(l))}</b></div>`).join('');
+  M(`<h2>${moi ? '✅ Đã lưu ' : ''}${p.so_phieu}</h2><p class="muted">${dd(p.ngay)} · ${esc(p.nguoi_nop)} · lập bởi ${esc(p.nguoi_lap)} · <span class="st ${p.st}">${ST_TXT[p.st]}</span></p>
+   ${p.st === 'huy' ? `<div class="note err">Đã hủy: ${esc(p.ly_do_huy)} (${esc(p.nguoi_huy)})</div>` : ''}
+   <div class="card" style="margin-top:12px">${L}<div class="item"><span class="n">Tổng cộng · ${p.hinh_thuc === 'CK' ? 'Chuyển khoản' : 'Tiền mặt'}</span><b style="font-size:18px">${fmt(p.tong)}</b></div></div>
+   ${p.hinh_thuc === 'CK' && p.st !== 'huy' ? `<p style="text-align:center;font-size:13px">Phụ huynh quét mã — nội dung chuyển khoản <b>${p.so_phieu}</b></p><img class="qr" src="${qrUrl(p, 'compact2')}" alt="QR">` : ''}
+   <button class="btn full" onclick="inPhieu(window._P)">🖨️ In phiếu thu (2 liên)</button>
+   ${p.st === 'c1' && can('QL') || p.st === 'c2' && can('BGD') ? `<button class="btn navy full" onclick="duyet('${p.so_phieu}')">✔ Duyệt ${p.st === 'c1' ? 'cấp 1' : 'cấp 2 (BGĐ)'}</button>` : ''}
+   ${p.st !== 'huy' && (p.st === 'c1' || can('BGD')) ? `<button class="btn ghost full" style="color:var(--red)" onclick="huyPhieu('${p.so_phieu}')">Hủy phiếu</button>` : ''}`);
+}
+function tienDong(l) { return (l.loai === 'HP' ? +l.so_tuan : +(l.so_luong || 1)) * +l.don_gia - (+l.giam || 0); }
+function noiDung(l, txt) {
+  if (l.loai === 'HP') return `Học phí ${esc(lopOf(l.ma_lop).ten_lop || '')} · ${fh(l.so_tuan)} tuần${txt ? ' · ' : '<br><small>'}${dd(l.ngay_bd)} – ${dd(l.ngay_kt)}${txt ? '' : '</small>'}`;
+  if (l.loai === 'LP') return esc((S.lephi.find(x => x.ma_lp === l.ma_lp) || {}).ten || 'Lệ phí');
+  return esc(hlName(S.hl.find(x => x.ma_hl === l.ma_hl)) || 'Học liệu');
+}
+
+// ================= DANH SÁCH PHIẾU =================
+async function loadDs() { const r = await apiGet('phieu'); if (!r.ok) return toast(r.error, true); PHIEU = r.data; renderDs(); }
+function segDs(b) { segBtns(b); dsF = b.dataset.v; renderDs(); }
+function renderDs() {
+  const q = ($('dsTim').value || '').toLowerCase();
+  const L = PHIEU.filter(p => (dsF === 'all' || (dsF === 'cho' ? (p.st === 'c1' || p.st === 'c2') : p.st === dsF)) &&
+    (!q || (p.so_phieu + ' ' + p.nguoi_nop + ' ' + p.lines.map(l => l.ten_hv).join(' ')).toLowerCase().includes(q)));
+  $('dsPhieu').innerHTML = L.map((p, i) => `<div class="item tap" onclick="showPhieu(PHIEU[${PHIEU.indexOf(p)}])"><div><span class="n">${p.so_phieu}</span><small>${dd(p.ngay)} · ${esc(p.nguoi_nop)} · ${esc([...new Set(p.lines.map(l => l.ten_hv))].join(', '))}</small></div>
+   <div style="text-align:right"><b>${fmt(p.tong)}</b><br><span class="st ${p.st}">${ST_TXT[p.st]}</span></div></div>`).join('') || '<p class="muted">Không có phiếu (45 ngày gần nhất).</p>';
+}
+async function duyet(so) {
+  const before = (PHIEU.find(p => p.so_phieu === so) || window._P).st;
+  const ok = await writeConfirm('duyetPhieu', { so }, async () => { const r = await apiGet('phieu'); if (!r.ok) return null; PHIEU = r.data; const p = PHIEU.find(x => x.so_phieu === so); return p && p.st !== before ? p : null; }, 'Đang duyệt…');
+  if (ok) { toast('Đã duyệt ' + so); closeM(); renderDs(); if (CUR === 'qt') loadQT(); }
+}
+async function huyPhieu(so) {
+  const ly = prompt('Lý do hủy phiếu ' + so + ' (bắt buộc):'); if (!ly) return;
+  const ok = await writeConfirm('huyPhieu', { so, ly_do: ly }, async () => { const r = await apiGet('phieu'); if (!r.ok) return null; PHIEU = r.data; const p = PHIEU.find(x => x.so_phieu === so); return p && p.st === 'huy' ? p : null; }, 'Đang hủy phiếu…');
+  if (ok) { toast('Đã hủy ' + so); closeM(); renderDs(); boot(); }
+}
+
+// ================= IN PHIẾU THU 2 LIÊN =================
+function docSo(n) {
+  n = Math.round(n); if (!n) return 'Không đồng'; const am = n < 0; n = Math.abs(n);
+  const cs = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+  const doc3 = (x, full) => {
+    const t = Math.floor(x / 100), c = Math.floor(x % 100 / 10), d = x % 10, r = [];
+    if (full || t) r.push(cs[t] + ' trăm');
+    if (c > 1) { r.push(cs[c] + ' mươi'); if (d === 1) r.push('mốt'); else if (d === 5) r.push('lăm'); else if (d === 4) r.push('tư'); else if (d) r.push(cs[d]); }
+    else if (c === 1) { r.push('mười'); if (d === 5) r.push('lăm'); else if (d) r.push(cs[d]); }
+    else if (d) { if (full || t) r.push('lẻ'); r.push(cs[d]); }
+    return r.join(' ');
+  };
+  const u = ['', ' nghìn', ' triệu', ' tỷ']; let parts = [], i = 0;
+  while (n > 0) { const x = n % 1000; n = Math.floor(n / 1000); if (x) parts.unshift(doc3(x, n > 0) + u[i]); i++; }
+  const s = parts.join(' ').trim(); return (am ? 'Âm ' : '') + s.charAt(0).toUpperCase() + s.slice(1) + ' đồng';
+}
+function lienHTML(p, lien) {
+  const c = S.cfg;
+  const rows = p.lines.map((l, i) => `<tr><td>${i + 1}</td><td>${esc(l.ten_hv)}</td><td>${noiDung(l)}</td><td class="r">${l.loai === 'HP' ? fh(l.so_tuan) + ' tuần' : (l.so_luong || 1)}</td><td class="r">${(+l.don_gia).toLocaleString('vi-VN')}</td><td class="r">${+l.giam ? (+l.giam).toLocaleString('vi-VN') : ''}</td><td class="r">${tienDong(l).toLocaleString('vi-VN')}</td></tr>`).join('');
+  const coHL = p.lines.some(l => l.loai === 'HL');
+  return `<div class="lien">${p.st === 'huy' ? '<div class="huy">ĐÃ HỦY</div>' : ''}
+   <div class="hd"><div><div class="tt">${esc(c.ten_tt || 'TRUNG TÂM ANH NGỮ TÂN MINH')}</div><div class="dc">${esc(c.dia_chi || '')}${c.sdt ? ' · ĐT: ' + esc(c.sdt) : ''}</div></div><div class="lb">${lien}</div></div>
+   <h2>PHIẾU THU</h2><div class="so">Số: <b>${p.so_phieu}</b> · Ngày ${dd(p.ngay)}</div>
+   <div class="info"><div>Người nộp: <b>${esc(p.nguoi_nop)}</b></div><div>Điện thoại: ${esc(p.sdt) || '……………'}</div>
+     <div>Hình thức: <b>${p.hinh_thuc === 'CK' ? 'Chuyển khoản' : 'Tiền mặt'}</b></div><div>Người lập: ${esc(p.nguoi_lap)}</div></div>
+   <table><tr><th>#</th><th>Học viên</th><th>Nội dung</th><th class="r">SL</th><th class="r">Đơn giá</th><th class="r">Giảm</th><th class="r">Thành tiền</th></tr>${rows}
+    <tr><td colspan="6" class="r"><b>TỔNG CỘNG</b></td><td class="r"><b>${p.tong.toLocaleString('vi-VN')}</b></td></tr></table>
+   <div class="sum"><div class="chu">Bằng chữ: <b>${docSo(p.tong)}</b>.<br><span style="font-style:normal;font-size:8pt">${coHL ? 'Học liệu, đồng phục đã nhận đủ khi nộp tiền. ' : ''}${esc(c.ghi_chu_phieu || '')}${p.ghi_chu ? '<br>Ghi chú: ' + esc(p.ghi_chu) : ''}</span></div>
+    ${p.hinh_thuc === 'CK' ? `<div class="qrb"><img src="${qrUrl(p, 'qr_only')}" alt="QR"><b>Quét để chuyển khoản</b><br>ND: ${p.so_phieu}</div>` : ''}</div>
+   <div class="ky"><div>Người nộp tiền<small>(ký, ghi rõ họ tên)</small></div><div>Người thu tiền<small>(ký, ghi rõ họ tên)</small></div><div>Ban Giám đốc<small>(ký duyệt)</small></div></div>
+   <div class="ft">${lien === 'LIÊN 1' ? 'Liên 1: Lưu tại Trung tâm' : 'Liên 2: Giao phụ huynh / học viên'} · Mã phiếu ${p.so_phieu} dùng để tra cứu và đối soát</div></div>`;
+}
+function inPhieu(p) {
+  const html = `<div class="a4">${lienHTML(p, 'LIÊN 1')}${lienHTML(p, 'LIÊN 2')}</div>`;
+  $('printArea').innerHTML = html; $('printPrev').innerHTML = html;
+  const w = $('printWrap'); w.classList.remove('hidden'); closeM();
+  const a4 = $('printPrev').querySelector('.a4'), sc = Math.min(1, (w.clientWidth - 24) / a4.offsetWidth);
+  a4.style.transform = `scale(${sc})`; $('printPrev').style.height = a4.offsetHeight * sc + 'px';
+}
+
+// ================= HỌC LIỆU =================
+function renderHL() {
+  const groups = ['Tất cả', ...new Set(S.hl.map(h => h.nhom))];
+  $('hlSeg').innerHTML = groups.map(g => `<button class="${g === hlF ? 'on' : ''}" onclick="hlF='${g}';renderHL()">${g}</button>`).join('');
+  $('hlList').innerHTML = S.hl.filter(h => hlF === 'Tất cả' || h.nhom === hlF).map(h => `<div class="item"><div><span class="n">${esc(hlName(h))}</span>
+   <small>${esc(h.nhom)}${h.cap_do ? ' · ' + esc(h.cap_do) : ''} · đơn giá ${h.don_gia ? fmt(h.don_gia) : '<span class="low">chưa có</span>'}${can('BGD') ? ` · giá nhập ${h.gia_nhap ? fmt(h.gia_nhap) + ' · chênh lệch ' + fmt(h.don_gia - h.gia_nhap) : 'chưa có'}` : ''}</small></div>
+   <div class="qty ${h.sl < +h.ton_toi_thieu ? 'low' : ''}">${h.sl}${h.sl < +h.ton_toi_thieu ? '<br><small class="low">cần bổ sung</small>' : ''}</div></div>`).join('') || '<p class="muted">Chưa có học liệu.</p>';
+}
+async function loadHlLog() {
+  renderHL(); const r = await apiGet('hlLog'); if (!r.ok) return;
+  $('hlLog').innerHTML = r.data.map(x => `<div class="item"><div><span style="font-weight:500">${esc(x.a)}</span><small>${dd(x.tg)} ${String(x.tg).slice(11, 16)} · ${esc(x.p)}</small></div></div>`).join('') || '<p class="muted">Chưa có.</p>';
+}
+const hlOpts = () => S.hl.map(x => `<option value="${x.ma_hl}">${esc(hlName(x))} (còn ${x.sl})</option>`).join('');
+function openNhap() {
+  M(`<h2>Nhập học liệu</h2><label>Học liệu / đồng phục</label><select id="nh">${hlOpts()}</select>
+  <div class="row"><div><label>Số lượng</label><input id="nsl" type="number" inputmode="numeric" value="10"></div><div><label>Nơi cung cấp</label><input id="nncc" placeholder="VD: Nhà sách Fahasa"></div></div>
+  ${can('BGD') ? '<label>Giá nhập / đơn vị</label><input id="ngia" type="number" inputmode="numeric" placeholder="đ">' : '<div class="note warn">Giá nhập: để trống, Ban Giám đốc sẽ cập nhật.</div>'}
+  <label>Ghi chú</label><input id="nghi" placeholder="VD: số hóa đơn, người giao">
+  <button class="btn navy full" onclick="doNhap()">Lưu</button>`);
+}
+async function doNhap() {
+  const ma = $('nh').value, n = +$('nsl').value; if (!(n > 0)) return toast('Số lượng không hợp lệ', true);
+  const before = (S.hl.find(x => x.ma_hl === ma) || {}).sl || 0;
+  const ok = await writeConfirm('nhapHL', { ma_hl: ma, so_luong: n, gia_nhap: $('ngia') ? $('ngia').value : '', noi_cung_cap: $('nncc').value, ghi_chu: $('nghi').value },
+    async () => { const r = await apiGet('boot'); if (!r.ok) return null; const g = r.data.hl.find(x => x.ma_hl === ma); if (g && g.sl !== before) { S = r.data; return true; } return null; });
+  if (ok) { closeM(); toast('Đã nhập ' + n); loadHlLog(); }
+}
+function openXuat() {
+  M(`<h2>Cấp phát / Xuất</h2><p class="muted">Học viên nộp tiền nhận học liệu → lập Phiếu thu, số lượng tự trừ. Màn này dùng cho cấp phát giáo viên/lớp, hư hỏng, thất lạc.</p>
+  <label>Học liệu / đồng phục</label><select id="xh">${hlOpts()}</select>
+  <div class="row"><div><label>Số lượng</label><input id="xsl" type="number" inputmode="numeric" value="1"></div>
+  <div><label>Lý do</label><select id="xl"><option>Cấp phát cho giáo viên/lớp</option><option>Hư hỏng</option><option>Thất lạc</option><option>Khác</option></select></div></div>
+  <label>Ghi chú (bắt buộc)</label><input id="xg" placeholder="VD: cấp cho Ms Linh, lớp Movers 5.1">
+  <button class="btn navy full" onclick="doXuat()">Lưu</button>`);
+}
+async function doXuat() {
+  const ma = $('xh').value, n = +$('xsl').value, g = S.hl.find(x => x.ma_hl === ma);
+  if (!$('xg').value.trim()) return toast('Vui lòng ghi rõ lý do', true);
+  if (!(n > 0) || n > g.sl) return toast('Số lượng còn lại không đủ', true);
+  const ok = await writeConfirm('xuatHL', { ma_hl: ma, so_luong: n, ly_do: $('xl').value, ghi_chu: $('xg').value.trim() },
+    async () => { const r = await apiGet('boot'); if (!r.ok) return null; const x = r.data.hl.find(y => y.ma_hl === ma); if (x && x.sl !== g.sl) { S = r.data; return true; } return null; });
+  if (ok) { closeM(); toast('Đã ghi xuất'); loadHlLog(); }
+}
+function openKiemKe() {
+  M(`<h2>Kiểm kê học liệu</h2><p class="muted">Nhập số đếm thực tế. Để trống mục không kiểm. Số trên app sẽ lấy theo số thực tế từ thời điểm này.</p>
+   <div class="card">${S.hl.map(h => `<div class="item"><div><span class="n">${esc(hlName(h))}</span><small>trên app: ${h.sl}</small></div><input style="width:90px" type="number" inputmode="numeric" data-kk="${h.ma_hl}"></div>`).join('')}</div>
+   <label>Ghi chú</label><input id="kkGhi" placeholder="VD: kiểm kê đầu kỳ tháng 10">
+   <button class="btn navy full" onclick="doKiemKe()">Lưu kiểm kê</button>`);
+}
+async function doKiemKe() {
+  const items = [...document.querySelectorAll('[data-kk]')].filter(i => i.value !== '').map(i => ({ ma_hl: i.dataset.kk, sl: +i.value }));
+  if (!items.length) return toast('Chưa nhập số nào', true);
+  const lech = items.filter(i => i.sl !== S.hl.find(h => h.ma_hl === i.ma_hl).sl);
+  if (!confirm(`Lưu kiểm kê ${items.length} mục (${lech.length} mục chênh lệch so với app)?`)) return;
+  const ok = await writeConfirm('kiemKe', { items, ghi_chu: $('kkGhi').value },
+    async () => { const r = await apiGet('boot'); if (!r.ok) return null; if (items.every(i => r.data.hl.find(h => h.ma_hl === i.ma_hl).sl === i.sl)) { S = r.data; return true; } return null; });
+  if (ok) { closeM(); toast('Đã lưu kiểm kê'); loadHlLog(); }
+}
+
+// ================= CHẤM CÔNG =================
+function initCC() {
+  if (!$('ccNgay').value) $('ccNgay').value = today();
+  const me = S.user.ma_ns, cur = $('ccNguoi').value || me;
+  $('ccNguoi').innerHTML = S.ns.map(n => `<option value="${n.ma}" ${n.ma === cur ? 'selected' : ''}>${esc(n.ten)}</option>`).join('');
+  $('ccLoai').innerHTML = S.cv.map(c => `<div class="chip ${c === ccCV ? 'on' : ''}" style="flex:0 0 calc(33.3% - 6px)" onclick="ccCV='${c}';segChip(this)">${c}</div>`).join('');
+}
+function stepGio(d) { const i = $('ccGio'); const v = Math.max(0, (+String(i.value).replace(',', '.') || 0) + d); i.value = String(v).replace('.', ','); }
+let CCL = [];
+async function loadCC() {
+  const d = $('ccNgay').value; $('ccList').innerHTML = '<p class="muted">Đang tải…</p>';
+  const r = await apiGet('chamcong', { tu: d, den: d }); if (!r.ok) return toast(r.error, true);
+  CCL = r.data; $('ccSum').textContent = fh(CCL.reduce((a, c) => a + +c.so_gio, 0)) + ' giờ';
+  $('ccList').innerHTML = CCL.map(c => `<div class="item"><div><span class="n">${esc(c.ten)}</span><small>${esc(c.cong_viec)}${c.ghi_chu ? ' · ' + esc(c.ghi_chu) : ''} · ghi bởi ${esc(c.nguoi_ghi)}</small></div>
+   <div style="text-align:right"><b>${fh(c.so_gio)} giờ</b>${c.nguoi_ghi === S.user.ho_ten || can('QL') ? `<br><button class="btn sm ghost" onclick="xoaCC('${c.ma_cc}')">Xóa</button>` : ''}</div></div>`).join('') || '<p class="muted">Chưa có.</p>';
+}
+async function luuCC() {
+  const g = +String($('ccGio').value).replace(',', '.'); if (!(g > 0 && g <= 14)) return toast('Số giờ không hợp lệ', true);
+  const d = $('ccNgay').value, ns = $('ccNguoi').value, n0 = CCL.length;
+  const ok = await writeConfirm('saveCC', { ngay: d, ma_ns: ns, cong_viec: ccCV, so_gio: g, ghi_chu: $('ccGhi').value.trim() },
+    async () => { const r = await apiGet('chamcong', { tu: d, den: d }); return r.ok && r.data.length > n0 ? true : null; }, 'Đang lưu chấm công…');
+  if (ok) { $('ccGhi').value = ''; toast('Đã lưu'); loadCC(); }
+}
+async function xoaCC(ma) {
+  if (!confirm('Xóa dòng chấm công này?')) return; const d = $('ccNgay').value;
+  const ok = await writeConfirm('xoaCC', { ma_cc: ma }, async () => { const r = await apiGet('chamcong', { tu: d, den: d }); return r.ok && !r.data.some(x => x.ma_cc === ma) ? true : null; }, 'Đang xóa…');
+  if (ok) loadCC();
+}
+
+// ================= CÔNG & LƯƠNG =================
+function initThang() {
+  const d = new Date(), o = [];
+  for (let i = 0; i < 12; i++) { const x = new Date(d.getFullYear(), d.getMonth() - i, 1); const v = x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0'); o.push(`<option value="${v}">Tháng ${v.slice(5)}/${v.slice(0, 4)}</option>`); }
+  const cur = $('thang').value; $('thang').innerHTML = o.join(''); if (cur) $('thang').value = cur;
+}
+function segL(b) { segBtns(b); lV = b.dataset.v; renderLuong(); }
+async function loadLuong() { $('l-body').innerHTML = '<p class="muted">Đang tải…</p>'; const r = await apiGet('luong', { thang: $('thang').value }); if (!r.ok) return toast(r.error, true); LUONG = r.data; renderLuong(); }
+function renderLuong() {
+  if (!LUONG) return; const ds = LUONG.ds;
+  if (!ds.length) { $('l-body').innerHTML = '<div class="card"><p class="muted">Tài khoản của bạn chưa gắn với hồ sơ giáo viên/nhân sự. Nhờ Ban Giám đốc cập nhật mục Người dùng (cột ma_ns).</p></div>'; return; }
+  if (lV === 'cong') {
+    $('l-body').innerHTML = `<div class="card"><h3>Tổng giờ theo công việc <span class="muted">${ds.length} người</span></h3>` + ds.map(n => `<div class="item"><div><span class="n">${esc(n.ten)}</span>
+      <div class="brk">${Object.entries(n.gio).map(([k, v]) => `${k}: <b>${fh(v)}</b>`).join(' · ') || 'Chưa có giờ'}${n.tuan ? '<br>' + Object.entries(n.tuan).map(([k, v]) => `${k}: ${fh(v)}h`).join(' · ') : ''}</div></div><div class="qty">${fh(n.tong_gio)}<small>giờ</small></div></div>`).join('') + '</div>';
+    return;
+  }
+  const bgd = can('BGD'); let tong = 0, chua = 0;
+  const rows = ds.map((n, i) => {
+    const t = n.thuc_linh; if (t != null) { tong += t; if (!n.da_tra) chua += t; }
+    const ct = n.kieu === 'KHOAN' ? `Lương khoán ${fmt(n.khoan)} (${n.khoan_tu}–${n.khoan_den} giờ) · ${fh(n.tong_gio)} giờ` : Object.entries(n.gio).map(([k, v]) => `${k} ${fh(v)}h × ${fmt(n.don_gia[k] || 0)}${n.don_gia[k] ? '' : ' <span class="low">(chưa có đơn giá)</span>'}`).join('<br>') || 'Chưa có giờ';
+    return `<div class="item"><div><span class="n">${esc(n.ten)}</span><div class="brk">${ct}${n.kieu === 'TUAN' ? '<br>Tính theo tuần' : ''}${n.phu_cap ? `<br>Phụ cấp/điều chỉnh: ${fmt(n.phu_cap)}${n.ghi_chu_pc ? ' — ' + esc(n.ghi_chu_pc) : ''}` : ''}</div></div>
+     <div style="text-align:right">${n.so_tay != null ? `<b>${fmt(n.so_tay)}</b><div class="brk">✍️ Điều chỉnh tay${n.cong_thuc != null ? ` (công thức: <s>${fmt(n.cong_thuc)}</s>)` : ''}<br>${esc(n.ly_do_tay)}</div>` : t == null ? '<span class="st no">Cần điều chỉnh tay</span><div class="brk">dưới mức giờ khoán</div>' : `<b>${fmt(t)}</b>`}
+     ${n.da_tra ? `<br><span class="st ok">Đã chi trả</span><div class="brk">${esc(n.da_tra)}</div>` : bgd ? `<br><button class="btn sm ghost" style="margin:4px 0" onclick="dcLuong(${i})">✍️ Điều chỉnh</button>${t != null ? `<br><button class="btn sm" onclick="traLuong(${i})">Xác nhận chi trả</button>` : ''}` : '<br><span class="st c1">Chưa chi trả</span>'}</div></div>`;
+  }).join('');
+  $('l-body').innerHTML = (bgd ? `<div class="kpi"><div><small>Tổng quỹ lương</small><b>${fmt(tong)}</b></div><div><small>Chưa chi trả</small><b class="${chua ? 'low' : ''}">${fmt(chua)}</b></div></div>` : '') +
+    `<div class="card">${rows}</div>` + (bgd ? `<button class="btn navy full" onclick="inLuong()">🖨️ In bảng lương</button>` : '');
+}
+function dcLuong(i) {
+  const n = LUONG.ds[i];
+  M(`<h2>Điều chỉnh lương — ${esc(n.ten)}</h2><p class="muted">Tháng ${LUONG.thang.slice(5)}/${LUONG.thang.slice(0, 4)} · Theo công thức (chưa gồm phụ cấp): <b>${n.cong_thuc != null ? fmt(n.cong_thuc - n.phu_cap) : 'không áp dụng'}</b></p>
+  <label>Phụ cấp / điều chỉnh (đ, số âm = trừ)</label><input id="dcPc" type="number" inputmode="numeric" value="${n.phu_cap || ''}">
+  <label>Ghi chú phụ cấp</label><input id="dcPcG" value="${esc(n.ghi_chu_pc)}">
+  <label>Thực lĩnh nhập tay (để trống = theo công thức)</label><input id="dcSo" type="number" inputmode="numeric" value="${n.so_tay ?? ''}">
+  <label>Lý do nhập tay</label><input id="dcLy" value="${esc(n.ly_do_tay)}" placeholder="VD: giữ lương khoán dù thiếu 1,25 giờ">
+  <button class="btn navy full" onclick="luuDC(${i})">Lưu</button>`);
+}
+async function luuDC(i) {
+  const n = LUONG.ds[i], so = $('dcSo').value === '' ? null : +$('dcSo').value, ly = $('dcLy').value.trim();
+  if (so !== null && !ly) return toast('Cần ghi lý do nhập tay', true);
+  const pc = +$('dcPc').value || 0, th = LUONG.thang;
+  const ok = await writeConfirm('dcLuong', { thang: th, ma_ns: n.ma, phu_cap: pc, ghi_chu_pc: $('dcPcG').value.trim(), so_tay: so, ly_do_tay: so === null ? '' : ly },
+    async () => { const r = await apiGet('luong', { thang: th }); if (!r.ok) return null; const x = r.data.ds.find(y => y.ma === n.ma); if (x && x.phu_cap === pc && x.so_tay === so) { LUONG = r.data; return true; } return null; });
+  if (ok) { closeM(); toast('Đã lưu điều chỉnh'); renderLuong(); }
+}
+async function traLuong(i) {
+  const n = LUONG.ds[i]; if (!confirm(`Xác nhận đã chi trả ${fmt(n.thuc_linh)} cho ${n.ten}? Sau khi xác nhận sẽ khóa, không sửa được.`)) return;
+  const th = LUONG.thang;
+  const ok = await writeConfirm('traLuong', { thang: th, ma_ns: n.ma, so_tien: n.thuc_linh },
+    async () => { const r = await apiGet('luong', { thang: th }); if (!r.ok) return null; const x = r.data.ds.find(y => y.ma === n.ma); if (x && x.da_tra) { LUONG = r.data; return true; } return null; });
+  if (ok) { toast('Đã xác nhận'); renderLuong(); }
+}
+function inLuong() {
+  const th = LUONG.thang, c = S.cfg;
+  const rows = LUONG.ds.map((n, i) => `<tr><td>${i + 1}</td><td>${esc(n.ten)}</td><td>${n.kieu === 'KHOAN' ? 'Khoán ' + fmt(n.khoan) : Object.entries(n.gio).map(([k, v]) => `${k} ${fh(v)}h×${(n.don_gia[k] || 0).toLocaleString('vi-VN')}`).join('<br>')}</td><td class="r">${fh(n.tong_gio)}</td><td class="r">${(n.phu_cap || 0).toLocaleString('vi-VN')}</td><td class="r"><b>${n.thuc_linh != null ? n.thuc_linh.toLocaleString('vi-VN') : '—'}</b>${n.so_tay != null ? '<br><small>(nhập tay)</small>' : ''}</td><td></td></tr>`).join('');
+  const tong = LUONG.ds.reduce((a, n) => a + (n.thuc_linh || 0), 0);
+  const html = `<div class="a4"><div class="lien" style="height:auto;min-height:297mm"><div class="hd"><div><div class="tt">${esc(c.ten_tt || '')}</div><div class="dc">${esc(c.dia_chi || '')}</div></div></div>
+   <h2>BẢNG LƯƠNG THÁNG ${th.slice(5)}/${th.slice(0, 4)}</h2><div class="so">In ngày ${dd(today())}</div>
+   <table><tr><th>#</th><th>Họ tên</th><th>Chi tiết</th><th class="r">Giờ</th><th class="r">Phụ cấp</th><th class="r">Thực lĩnh</th><th>Ký nhận</th></tr>${rows}
+   <tr><td colspan="5" class="r"><b>TỔNG CỘNG</b></td><td class="r"><b>${tong.toLocaleString('vi-VN')}</b></td><td></td></tr></table>
+   <div class="ky" style="margin-top:8mm"><div>Người lập</div><div></div><div>Ban Giám đốc</div></div></div></div>`;
+  $('printArea').innerHTML = html; $('printPrev').innerHTML = html;
+  const w = $('printWrap'); w.classList.remove('hidden');
+  const a4 = $('printPrev').querySelector('.a4'), sc = Math.min(1, (w.clientWidth - 24) / a4.offsetWidth);
+  a4.style.transform = `scale(${sc})`; $('printPrev').style.height = a4.offsetHeight * sc + 'px';
+}
+
+// ================= QUẢN TRỊ =================
+let QT = null;
+async function loadQT() {
+  const r = await apiGet('quantri'); if (!r.ok) return toast(r.error, true); QT = r.data;
+  const t = QT.thu, tong = t.HP + t.LP + t.HL;
+  $('qtBody').innerHTML = `<div class="kpi"><div><small>Thu tháng ${QT.thang.slice(5)} (đã duyệt đủ 2 cấp)</small><b>${fmt(tong)}</b></div><div><small>Trong đó học phí</small><b>${fmt(t.HP)}</b></div>
+    <div><small>Lệ phí · Học liệu</small><b>${fmt(t.LP)} · ${fmt(t.HL)}</b></div><div><small>Học viên hết hạn trong 7 ngày</small><b>${QT.sap_het_han}</b></div>
+    <div><small>Học liệu cần bổ sung</small><b class="${QT.hl_can_bo_sung ? 'low' : ''}">${QT.hl_can_bo_sung}</b></div><div><small>Phiếu chờ duyệt</small><b>${QT.cho_duyet.length}</b></div></div>
+   <div class="card"><h3>Chờ duyệt</h3>${QT.cho_duyet.map((p, i) => `<div class="item tap" onclick="showPhieu(QT.cho_duyet[${i}])"><div><span class="n">${p.so_phieu}</span><small>${dd(p.ngay)} · ${esc(p.nguoi_nop)} · lập bởi ${esc(p.nguoi_lap)} · <span class="st ${p.st}">${ST_TXT[p.st]}</span></small></div><b>${fmt(p.tong)}</b></div>`).join('') || '<p class="muted">Không có phiếu chờ duyệt.</p>'}</div>
+   ${can('BGD') && QT.xuat_can_xem.length ? `<div class="card"><h3>Học liệu hư hỏng / thất lạc cần xem</h3>${QT.xuat_can_xem.map(x => `<div class="item"><div><span class="n">${x.so_luong} ${esc(x.ten)} — ${esc(x.ly_do)}</span><small>${dd(x.ngay)} · ${esc(x.nguoi_xuat)} · ${esc(x.ghi_chu)}</small></div><button class="btn sm ghost" onclick="daXem('${x.ma_xuat}',this)">Đã xem</button></div>`).join('')}</div>` : ''}
+   <div class="card"><h3>Nhật ký thay đổi</h3>${QT.nhat_ky.map(x => `<div class="item"><div><span style="font-weight:500">${esc(x.hanh_dong)} ${esc(x.doi_tuong)}</span><small>${dd(x.tg)} ${String(x.tg).slice(11, 16)} · ${esc(x.nguoi)}${x.chi_tiet ? ' · ' + esc(String(x.chi_tiet).slice(0, 120)) : ''}</small></div></div>`).join('')}</div>`;
+}
+async function daXem(ma, btn) { btn.disabled = true; await apiPost('daXemXuat', { ma_xuat: ma }); btn.outerHTML = '<span class="st ok">Đã xem</span>'; }
+
+// danh mục: sửa trực tiếp
+const DM_TEN = { HOC_VIEN: 'Học viên', LOP: 'Lớp học', NHAN_SU: 'Giáo viên & nhân sự', DON_GIA: 'Đơn giá công việc', LE_PHI: 'Lệ phí', HOC_LIEU: 'Học liệu', NGUOI_DUNG: 'Người dùng', CAU_HINH: 'Cấu hình' };
+const DM_HINT = {
+  trang_thai: 'HOAT_DONG / NGUNG (học viên: DANG_HOC / NGHI)', vai_tro: 'GV (giáo vụ) · QL (quản lý) · BGD (Ban Giám đốc)', kieu_luong: 'GIO (theo giờ) · KHOAN (lương khoán) · TUAN (theo tuần)',
+  ma_lop: 'Mã lớp (xem danh mục Lớp học)', ma_ns: 'Mã nhân sự (NSxx) — gắn tài khoản với hồ sơ để xem phiếu lương', tu_thang: 'Áp dụng từ tháng, dạng 2026-10', cong_viec: 'Đúng tên loại công việc',
+  pin: 'Mã PIN đăng nhập (4–8 số). Để •••• = giữ nguyên', nhom: 'Sách / Giáo trình / Cặp / Đồng phục'
+};
+let DMD = null, DMT = '';
+async function openDM(t) {
+  DMT = t; busy(true, 'Đang tải danh mục…'); const r = await apiGet('danhmuc', { ten: t }); busy(false);
+  if (!r.ok) return toast(r.error, true); DMD = r.data;
+  M(`<h2>${DM_TEN[t]}</h2><div class="row" style="margin:8px 0"><input id="dmTim" placeholder="🔍 Tìm…" oninput="listDM()"><button class="btn navy" style="flex:0 0 auto" onclick="editDM(-1)">＋ Thêm</button></div><div class="card" id="dmList" style="max-height:60vh;overflow:auto"></div>
+   ${t === 'DON_GIA' ? '<p class="muted">Đổi đơn giá: thêm dòng mới với "tu_thang" mới — giữ nguyên lịch sử các tháng cũ.</p>' : ''}`);
+  listDM();
+}
+function listDM() {
+  const q = ($('dmTim').value || '').toLowerCase(), c = DMD.cot;
+  $('dmList').innerHTML = DMD.dong.map((r, i) => ({ r, i })).filter(x => !q || Object.values(x.r).join(' ').toLowerCase().includes(q)).slice(0, 200)
+    .map(({ r, i }) => `<div class="item tap" onclick="editDM(${i})"><div><span class="n">${esc(r[c[1]] ?? r[c[0]])}</span><small>${c.slice(2, 6).map(k => esc(r[k])).filter(Boolean).join(' · ')}</small></div><small>${esc(r[c[0]])}</small></div>`).join('') || '<p class="muted">Trống.</p>';
+}
+function editDM(i) {
+  const r = i >= 0 ? DMD.dong[i] : {}, key = DMD.khoa;
+  $('sheet').innerHTML = `<h2>${i >= 0 ? 'Sửa' : 'Thêm'} — ${DM_TEN[DMT]}</h2>` + DMD.cot.map(k => `<label>${k}${DM_HINT[k] ? ' — <i>' + DM_HINT[k] + '</i>' : ''}</label>
+    <input data-f="${k}" value="${esc(r[k] ?? '')}" ${k === key && i >= 0 ? 'disabled' : ''} ${k === key && i < 0 && DMT !== 'CAU_HINH' && DMT !== 'CONG_VIEC' ? 'placeholder="(để trống — tự sinh mã)"' : ''}>`).join('') +
+    `<div class="row" style="margin-top:14px"><button class="btn ghost" onclick="openDM(DMT)">← Quay lại</button><button class="btn navy" onclick="saveDM(${i})">Lưu</button></div>`;
+}
+async function saveDM(i) {
+  const o = {}; document.querySelectorAll('[data-f]').forEach(e => { const v = e.value.trim(); o[e.dataset.f] = v !== '' && /^-?\d+(\.\d+)?$/.test(v) && !/^0\d/.test(v) && !['pin', 'sdt_ph', 'sdt', 'so_tk', 'bank_bin', 'gia_tri', 'tu_thang'].includes(e.dataset.f) ? +v : v; });
+  const n0 = DMD.dong.length, t = DMT;
+  const ok = await writeConfirm('saveDanhMuc', { ten: t, dong: o }, async () => {
+    const r = await apiGet('danhmuc', { ten: t }); if (!r.ok) return null;
+    const changed = i < 0 ? r.data.dong.length > n0 : JSON.stringify(r.data.dong[i]) !== JSON.stringify(DMD.dong[i]);
+    if (changed) { DMD = r.data; return true; } return null;
+  }, 'Đang lưu…');
+  if (ok) { toast('Đã lưu'); openDM(t); boot(); }
+}
+
+// ================= KHỞI ĐỘNG =================
+if (!navigator.onLine) $('net').style.display = 'block';
+if (PIN) boot(); else $('login').classList.remove('hidden');
+</script>
+</body>
+</html>
