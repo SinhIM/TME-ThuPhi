@@ -258,7 +258,7 @@ table.bc th,table.bc td{padding:.6mm .8mm;font-size:7pt}
 <div id="net">⚠️ Mất kết nối mạng — dữ liệu chưa gửi được</div>
 <header>
   <img class="logo" data-logo alt="Logo Tân Minh">
-  <h1>Anh ngữ Tân Minh<small>Hệ thống quản lý Trung tâm</small></h1>
+  <h1>Anh ngữ Tân Minh<small>Quản lý Trung tâm · <b style="color:#f5c542">BẢN THỬ v2</b></small></h1>
   <div class="u" id="who"></div>
   <button onclick="reload()" title="Tải lại">⟳</button>
   <button onclick="logout()" title="Đăng xuất">⏻</button>
@@ -418,7 +418,7 @@ table.bc th,table.bc td{padding:.6mm .8mm;font-size:7pt}
 <div id="login" class="hidden">
   <img class="lg-logo" data-logo alt="Logo Tân Minh">
   <h1>Trung tâm Anh ngữ<br>Tân Minh</h1>
-  <p style="opacity:.8;margin-top:8px">Nhập mã PIN của bạn</p>
+  <p style="opacity:.8;margin-top:8px">BẢN THỬ v2 (chạy song song) · Nhập mã PIN</p>
   <input id="pinIn" type="password" inputmode="numeric" maxlength="8" onkeydown="if(event.key==='Enter')doLogin()">
   <button class="btn" onclick="doLogin()">Đăng nhập</button>
   <p id="loginErr" style="color:#ffb4a9;margin-top:10px;font-size:13px"></p>
@@ -1998,6 +1998,5 @@ function giaLsHTML() {
 if (!navigator.onLine) $('net').style.display = 'block';
 if (PIN) boot(); else $('login').classList.remove('hidden');
 </script>
-<div id="banThu" style="position:fixed;top:0;left:50%;transform:translateX(-50%);background:#f5c542;color:#1a1a1a;font:600 11px/1.6 sans-serif;padding:0 10px;border-radius:0 0 6px 6px;z-index:9999;pointer-events:none">BẢN THỬ v2 · chạy song song</div>
 </body>
 </html>
